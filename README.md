@@ -1,10 +1,17 @@
-# Github Copliot demo (Fork from Azure Container Apps: Dapr Albums Sample)
+# Github Copliot demo 
+
+## Demo Scenarios
+
+### To start discovering Github Copilot jump to [`Copilot_Demos.md`](./COPILOT_DEMOS.md)
+<br/>
+
+
+## Solution Overview
+
 
 This repository is based on the [Azure Container Apps: Dapr Albums Sample](https://github.com/Azure-Samples/containerapps-dapralbums)
 
-It's used as a code base to demonstrate Github Copilot capabilities
-
-## Solution Overview
+It's used as a code base to demonstrate Github Copilot capabilities.
 
 The solution is composed of two microservices: the album API and the album viewer.
 
@@ -18,7 +25,4 @@ The [`album-api`](./album-api) is an .NET 6 minimal Web API that retrieves a lis
 
 The [`album-viewer`](./album-viewer) is a node application through which the albums retrieved by the API are surfaced. In order to display the repository of albums, the album viewer microservice uses the Dapr Service invocation API to contact the backend album API.
 
-## Demo Scenarios
-
-### To start discovering Github Copilot jump to [`Copilot_Demos.md`](./COPILOT_DEMOS.md)
 
