@@ -6,5 +6,21 @@
             "main-subtitle": "The future is now with copilot",
             "main-button": "Get started"
         }
+    }, 
+    {
+        "language": "fr",
+        "values": {
+            "main-title": "Bienvenue dans le monde du futur",
+            "main-subtitle": "Le futur c'est maintenant avec copilot",
+            "main-button": "Commencer"
+        }
+    },
+    {
+        "language": "es",
+        "values": {
+            "main-title": "Bienvenido al mundo del futuro",
+            "main-subtitle": "El futuro es ahora con copilot",
+            "main-button": "Empezar"
+        }
     }
 ]

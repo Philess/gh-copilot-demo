@@ -3,11 +3,11 @@
   "tasks": [
     {
       "label": "build",
-      "command": "/usr/local/share/dotnet/dotnet",
+      "command": "dotnet",
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/album-api/album-api.csproj",
+        "${workspaceFolder}/albums-api/albums-api.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -15,11 +15,11 @@
     },
     {
       "label": "publish",
-      "command": "/usr/local/bin/dotnet",
+      "command": "dotnet",
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/album-api/album-api.csproj",
+        "${workspaceFolder}/albums-api/albums-api.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -27,13 +27,13 @@
     },
     {
       "label": "watch",
-      "command": "/usr/local/bin/dotnet",
+      "command": "dotnet",
       "type": "process",
       "args": [
         "watch",
         "run",
         "--project",
-        "${workspaceFolder}/album-api/album-api.csproj"
+        "${workspaceFolder}/albums-api/albums-api.csproj"
       ],
       "problemMatcher": "$msCompile"
     },

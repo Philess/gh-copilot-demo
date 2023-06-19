@@ -1,27 +1,66 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
 
 namespace UnsecureApp.Controllers
 {
     public class MyController
     {
+        private string connectionString = "";
+
+        public HttpResponse Response { get; set; }
 
         public string ReadFile(string userInput)
         {
-            using (FileStream fs = File.Open(userInput, FileMode.Open))
-            {
-                byte[] b = new byte[1024];
-                UTF8Encoding temp = new UTF8Encoding(true);
+            if(!IsValidInput(userInput)) throw new ArgumentException("Invalid input");
 
-                while (fs.Read(b, 0, b.Length) > 0)
+            string filePath = Path.Combine("C:\\uploads", userInput);
+            if (!filePath.StartsWith("C:\\uploads"))
+            {
+                throw new ArgumentException("Invalid file path");
+            }
+
+            try
+            {
+                using (FileStream fs = File.Open(filePath, FileMode.Open))
                 {
-                    return temp.GetString(b);
+                    byte[] b = new byte[1024];
+                    UTF8Encoding temp = new UTF8Encoding(true);
+
+                    while (fs.Read(b, 0, b.Length) > 0)
+                    {
+                        string encodedString = HttpUtility.HtmlEncode(temp.GetString(b));
+                        return encodedString;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                // Log the exception
+                return null;
             }
 
             return null;
+        }
+
+        public bool IsValidInput(string userInput)
+        {
+            // Define a whitelist of allowed characters and patterns
+            string allowedPattern = "^[a-zA-Z0-9_]*$";
+
+            // Validate the user input against the whitelist
+            if (Regex.IsMatch(userInput, allowedPattern))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public int GetProduct(string productName)
@@ -30,12 +69,22 @@ namespace UnsecureApp.Controllers
             {
                 SqlCommand sqlCommand = new SqlCommand()
                 {
-                    CommandText = "SELECT ProductId FROM Products WHERE ProductName = '" + productName + "'",
+                    CommandText = "SELECT ProductId FROM Products WHERE ProductName = @ProductName",
                     CommandType = CommandType.Text,
+                    Connection = connection
                 };
+                sqlCommand.Parameters.AddWithValue("@ProductName", productName);
 
+                connection.Open();
                 SqlDataReader reader = sqlCommand.ExecuteReader();
-                return reader.GetInt32(0); 
+                if (reader.Read())
+                {
+                    return reader.GetInt32(0);
+                }
+                else
+                {
+                    return -1; // Or throw an exception
+                }
             }
         }
 
@@ -48,11 +97,9 @@ namespace UnsecureApp.Controllers
             }
             catch (Exception e)
             {
-                this.Response.Write(e.ToString());
+                this.Response.StatusCode = 500;
+                this.Response.WriteAsJsonAsync("An error occurred");
             }
-        
         }
-
-        private string connectionString = "";
     }
 }

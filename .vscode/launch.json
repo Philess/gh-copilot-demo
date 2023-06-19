@@ -40,13 +40,13 @@
       "request": "launch",
       "preLaunchTask": "Dapr up: Album API",
       "postDebugTask": "Dapr down: Album API",
-      "program": "${workspaceFolder}/album-api/bin/Debug/net6.0/album-api.dll",
+      "program": "${workspaceFolder}/albums-api/bin/Debug/net7.0/albums-api.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/album-api",
+      "cwd": "${workspaceFolder}/albums-api",
       "stopAtEntry": false,
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://*:5000;https://*:5001",
+        "ASPNETCORE_URLS": "http://localhost:5000;https://localhost:5001",
         "DAPR_HTTP_PORT": "3500",
         "DAPR_GRPC_PORT": "3501"
       }
