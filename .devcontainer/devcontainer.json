@@ -27,7 +27,7 @@
 	"forwardPorts": [3000],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": " wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | bash && cd albums-api && dapr init && dotnet restore && cd ../album-viewer npm install",
+	"postCreateCommand": " wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | bash && cd albums-api && dapr init && dotnet restore && cd ../album-viewer npm install && cd ../albums-api dotnet dev-certs https --trust",
 
 	// Configure tool-specific properties.
 	"customizations": {
