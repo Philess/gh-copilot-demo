@@ -1,7 +1,11 @@
 # Build and run solution
 
-- [Build and run with VS Code](#build-and-run-with-vs-code)
-- [Build and run manually](#build-and-run-manually)
+- [Build and run solution](#build-and-run-solution)
+  - [Pre-requisites](#pre-requisites)
+    - [Build and run with VS Code](#build-and-run-with-vs-code)
+    - [Build and run manually](#build-and-run-manually)
+      - [Steps](#steps)
+      - [Local run and debug](#local-run-and-debug)
 
 ## Pre-requisites
 

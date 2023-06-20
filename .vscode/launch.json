@@ -21,7 +21,7 @@
       "preLaunchTask": "Dapr up: Album Viewer",
       "postDebugTask": "Dapr down: Album Viewer",
       "env": {
-        "DAPR_HTTP_PORT": "3180",
+        "DAPR_HTTP_PORT": "3501",
         "DAPR_GRPC_PORT": "3101",
         "DAPR_METRICS_PORT": "9091",
         "ALBUM_API": "album-api",
@@ -48,7 +48,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_URLS": "http://localhost:5000;https://localhost:5001",
         "DAPR_HTTP_PORT": "3500",
-        "DAPR_GRPC_PORT": "3501"
+        "DAPR_GRPC_PORT": "3501",
+        "ASPNETCORE_HTTPS_PORT" : "5001"
       }
     }
   ]

@@ -57,10 +57,8 @@
         "album-viewer",
         "--app-port",
         "3000",
-        "--dapr-grpc-port",
-        "3101",
         "--dapr-http-port",
-        "3180"
+        "3501"
       ],
       "isBackground": true,
       "presentation": {
@@ -94,9 +92,7 @@
         "--components-path",
         "${workspaceFolder}/dapr-components/local",
         "--app-port",
-        "80",
-        "--dapr-grpc-port",
-        "3501",
+        "5000",
         "--dapr-http-port",
         "3500"
       ],
