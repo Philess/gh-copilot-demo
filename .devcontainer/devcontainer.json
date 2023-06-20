@@ -47,7 +47,8 @@
 				"github.copilot-labs",
 				"ms-azuretools.vscode-docker",
 				"github.vscode-pull-request-github",
-				"redhat.vscode-yaml"
+				"redhat.vscode-yaml",
+				"ms-azuretools.vscode-dapr"
 			]
 		}
 	}
