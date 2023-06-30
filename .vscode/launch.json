@@ -48,8 +48,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_URLS": "http://localhost:5000",
         "DAPR_HTTP_PORT": "3500",
-        "DAPR_GRPC_PORT": "3501",
-        // "ASPNETCORE_HTTPS_PORT" : "5001"
+        "DAPR_GRPC_PORT": "3501"
       }
     }
   ]

@@ -58,7 +58,7 @@ cd albums-api && dapr run --app-id album-api --app-port 5000 --dapr-http-port 35
 Once the api is up and running, launch a new terminal to run the frontend application.
 
 ```bash
-cd album-viewer
+cd album-viewer && 
 dapr run --app-id album-viewer --app-port 3000 --dapr-http-port 3501 --components-path ../dapr-components/local -- npm run start
 ```
 
