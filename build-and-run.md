@@ -1,7 +1,11 @@
 # Build and run solution
 
-- [Build and run with VS Code](#build-and-run-with-vs-code)
-- [Build and run manually](#build-and-run-manually)
+- [Build and run solution](#build-and-run-solution)
+  - [Pre-requisites](#pre-requisites)
+    - [Build and run with VS Code](#build-and-run-with-vs-code)
+    - [Build and run manually](#build-and-run-manually)
+      - [Steps](#steps)
+      - [Local run and debug](#local-run-and-debug)
 
 ## Pre-requisites
 
@@ -48,14 +52,13 @@ For local debugging and development, the component used by the album api to mana
 Now, it's time to run the `album-api` in a new terminal window- ensure you are sitting in the directory which holds the app code.
 
 ```bash
-cd album-api
-dapr run --app-id album-api --app-port 80 --dapr-http-port 3500 --components-path ../dapr-components/local -- dotnet run
+cd albums-api && dapr run --app-id album-api --app-port 5000 --dapr-http-port 3500 --components-path ../dapr-components/local -- dotnet run
 ```
 
 Once the api is up and running, launch a new terminal to run the frontend application.
 
 ```bash
-cd album-viewer
+cd album-viewer && 
 dapr run --app-id album-viewer --app-port 3000 --dapr-http-port 3501 --components-path ../dapr-components/local -- npm run start
 ```
 

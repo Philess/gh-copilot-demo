@@ -33,11 +33,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
-app.Urls.Add("http://0.0.0.0:${ASPNETCORE_URLS}");
+// app.Urls.Add("${ASPNETCORE_URLS}");
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseRouting();
 
 app.MapGet("/", async context =>
 {
