@@ -1,4 +1,4 @@
-# Github Copliot demo 
+# Github Copilot demo 
 
 ## Demo Scenarios
 
