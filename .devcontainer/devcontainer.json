@@ -9,26 +9,15 @@
 		
 	"name": "C# (.NET)",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/dotnet:9.0",
+	"image": "mcr.microsoft.com/devcontainers/dotnet:8.0-bullseye-slim",
 	"features": {
 		"ghcr.io/devcontainers/features/git:1": {
 			"ppa": true,
 			"version": "latest"
 		},
-		"docker-in-docker": {
-			"version": "latest",
-			"moby": true,
-			"dockerDashComposeVersion": "v1"
-		},
 		"ghcr.io/devcontainers/features/node:1": {
 			"nodeGypDependencies": true,
 			"version": "lts"
-		},
-		"ghcr.io/devcontainers/features/dotnet:1": {
-			"version": "8.0"
-		},
-		"ghcr.io/wxw-matt/devcontainer-features/command_runner": {
-			"version": "latest"
 		}
 	},
 
@@ -36,20 +25,16 @@
 	"forwardPorts": [3000],
 	
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": " cd albums-api && dotnet restore && cd ../album-viewer && npm install && cd ../albums-api dotnet dev-certs https --trust",
-
+	"postCreateCommand": "dotnet restore albums-api && npm install --prefix album-viewer && dotnet dev-certs https --trust && echo 'Setup complete'",
 	// Configure tool-specific properties.
+
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"ms-dotnettools.csharp",
-				"github.copilot-nightly",
 				"github.copilot-chat",
 				"github.copilot",
-				"ms-azuretools.vscode-docker",
-				"github.vscode-pull-request-github",
-				"redhat.vscode-yaml",
-				"ms-azuretools.vscode-dapr"
+				"github.vscode-pull-request-github"
 			]
 		}
 	}
