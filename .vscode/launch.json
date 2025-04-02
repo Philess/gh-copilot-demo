@@ -6,56 +6,47 @@
   "compounds": [
     {
       "name": "All services",
-      "configurations": ["Album API", "Album Viewer"]
+      "configurations": ["C#: Album API Debug", "Node.js: Album Viewer Debug"]
     }
   ],
   "configurations": [
     {
       "name": "C#: Album API Debug",
-      "type": "dotnet",
+      "type": "coreclr",
       "request": "launch",
-      "projectPath": "${workspaceFolder}/albums-api/albums-api.csproj"
-    },
-    {
-      "name": "Album Viewer",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/album-viewer",
-      "runtimeExecutable": "npm",
-      "skipFiles": ["<node_internals>/**"],
-      "runtimeArgs": ["run-script", "start"],
-      "preLaunchTask": "Dapr up: Album Viewer",
-      "postDebugTask": "Dapr down: Album Viewer",
-      "env": {
-        "DAPR_HTTP_PORT": "3501",
-        "DAPR_GRPC_PORT": "3101",
-        "DAPR_METRICS_PORT": "9091",
-        "ALBUM_API": "album-api",
-        "PORT": "3000"
-      },
-      "console": "integratedTerminal",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/albums-api/bin/Debug/net8.0/albums-api.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/albums-api",
+      "stopAtEntry": false,
       "serverReadyAction": {
         "action": "openExternally",
-        "pattern": "listening on port ([0-9]+)",
-        "uriFormat": "http://localhost:%s"
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/albums-api/Views"
       }
     },
-    // {
-    //   "name": "Album API",
-    //   "type": "coreclr",
-    //   "request": "launch",
-    //   "preLaunchTask": "Dapr up: Album API",
-    //   "postDebugTask": "Dapr down: Album API",
-    //   "program": "${workspaceFolder}/albums-api/bin/Debug/net7.0/albums-api.dll",
-    //   "args": [],
-    //   "cwd": "${workspaceFolder}/albums-api",
-    //   "stopAtEntry": false,
-    //   "env": {
-    //     "ASPNETCORE_ENVIRONMENT": "Development",
-    //     "ASPNETCORE_URLS": "http://localhost:5000",
-    //     "DAPR_HTTP_PORT": "3500",
-    //     "DAPR_GRPC_PORT": "3501"
-    //   }
-    // }
+    {
+      "name": "Node.js: Album Viewer Debug",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/album-viewer/bin/www",
+      "cwd": "${workspaceFolder}/album-viewer",
+      "preLaunchTask": "npm: install - album-viewer",
+      "runtimeExecutable": "node",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "3001",
+        "ALBUM_API_HOST": "localhost:3000", // or <my-fancy-codespace-name>-3000 if on codespaces
+        "BACKGROUND_COLOR": "black"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "sourceMaps": true
+    }
   ]
 }

@@ -9,7 +9,7 @@
 		
 	"name": "C# (.NET)",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/dotnet:8.0-bullseye-slim",
+	"image": "mcr.microsoft.com/devcontainers/dotnet:8.0-bookworm-slim",
 	"features": {
 		"ghcr.io/devcontainers/features/git:1": {
 			"ppa": true,
@@ -22,7 +22,7 @@
 	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [3000],
+	"forwardPorts": [3000,3001],
 	
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "dotnet restore albums-api && npm install --prefix album-viewer && dotnet dev-certs https --trust && echo 'Setup complete'",
@@ -31,10 +31,8 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-dotnettools.csharp",
 				"github.copilot-chat",
-				"github.copilot",
-				"github.vscode-pull-request-github"
+				"github.copilot"
 			]
 		}
 	}
