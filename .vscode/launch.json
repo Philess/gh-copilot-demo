@@ -11,6 +11,12 @@
   ],
   "configurations": [
     {
+      "name": "C#: Album API Debug",
+      "type": "dotnet",
+      "request": "launch",
+      "projectPath": "${workspaceFolder}/albums-api/albums-api.csproj"
+    },
+    {
       "name": "Album Viewer",
       "type": "node",
       "request": "launch",
@@ -34,22 +40,22 @@
         "uriFormat": "http://localhost:%s"
       }
     },
-    {
-      "name": "Album API",
-      "type": "coreclr",
-      "request": "launch",
-      "preLaunchTask": "Dapr up: Album API",
-      "postDebugTask": "Dapr down: Album API",
-      "program": "${workspaceFolder}/albums-api/bin/Debug/net7.0/albums-api.dll",
-      "args": [],
-      "cwd": "${workspaceFolder}/albums-api",
-      "stopAtEntry": false,
-      "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:5000",
-        "DAPR_HTTP_PORT": "3500",
-        "DAPR_GRPC_PORT": "3501"
-      }
-    }
+    // {
+    //   "name": "Album API",
+    //   "type": "coreclr",
+    //   "request": "launch",
+    //   "preLaunchTask": "Dapr up: Album API",
+    //   "postDebugTask": "Dapr down: Album API",
+    //   "program": "${workspaceFolder}/albums-api/bin/Debug/net7.0/albums-api.dll",
+    //   "args": [],
+    //   "cwd": "${workspaceFolder}/albums-api",
+    //   "stopAtEntry": false,
+    //   "env": {
+    //     "ASPNETCORE_ENVIRONMENT": "Development",
+    //     "ASPNETCORE_URLS": "http://localhost:5000",
+    //     "DAPR_HTTP_PORT": "3500",
+    //     "DAPR_GRPC_PORT": "3501"
+    //   }
+    // }
   ]
 }

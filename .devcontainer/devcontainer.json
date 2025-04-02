@@ -9,7 +9,7 @@
 		
 	"name": "C# (.NET)",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/dotnet:0-7.0",
+	"image": "mcr.microsoft.com/devcontainers/dotnet:9.0",
 	"features": {
 		"ghcr.io/devcontainers/features/git:1": {
 			"ppa": true,
@@ -24,6 +24,9 @@
 			"nodeGypDependencies": true,
 			"version": "lts"
 		},
+		"ghcr.io/devcontainers/features/dotnet:1": {
+			"version": "8.0"
+		},
 		"ghcr.io/wxw-matt/devcontainer-features/command_runner": {
 			"version": "latest"
 		}
@@ -31,9 +34,7 @@
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [3000],
-
-	"onCreateCommand": "wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | bash && dapr init",
-
+	
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": " cd albums-api && dotnet restore && cd ../album-viewer && npm install && cd ../albums-api dotnet dev-certs https --trust",
 
@@ -44,7 +45,7 @@
 				"ms-dotnettools.csharp",
 				"github.copilot-nightly",
 				"github.copilot-chat",
-				"github.copilot-labs",
+				"github.copilot",
 				"ms-azuretools.vscode-docker",
 				"github.vscode-pull-request-github",
 				"redhat.vscode-yaml",
