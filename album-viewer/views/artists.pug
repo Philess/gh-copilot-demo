@@ -1,0 +1,13 @@
+extends layout
+
+block content 
+    div(class="ui message attached " + background_color  style="height:50px") Artists
+    div(class="ui attached segment")
+      div(class="ui divided items")
+        each artist in artists
+          div(class="item")
+            div(class="content")
+              div(class="header")
+                span(class="artist-name")=artist.name
+              div(class="meta")
+                span(class="meta-info")=artist.genre
