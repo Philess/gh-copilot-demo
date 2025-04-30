@@ -59,6 +59,8 @@ namespace UnsecureApp.Controllers
             {
                 _logger.LogError(ex, "Unexpected error occurred.");
                 throw;
+
+                Console.WriteLine(e.ToString());
             }
             return null;
         }
