@@ -15,5 +15,11 @@
 
             return albums;
         }
+
+        public static Album? GetById(int id)
+        {
+            var albums = GetAll();
+            return albums.FirstOrDefault(a => a.Id == id);
+        } 
     }
 }

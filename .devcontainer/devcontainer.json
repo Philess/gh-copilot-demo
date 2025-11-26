@@ -28,7 +28,9 @@
 		"vscode": {
 			"extensions": [
 				"github.copilot-chat",
-				"github.copilot"
+				"github.copilot",
+				"vue.volar",
+				"ms-dotnettools.csdevkit"
 			]
 		}
 	}
