@@ -1,0 +1,43 @@
+{
+  "app": {
+    "title": "Album Viewer",
+    "subtitle": "Discover amazing music albums",
+    "pageTitle": "Album Viewer - Discover Music"
+  },
+  "currency": {
+    "symbol": "$"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "fr": "French",
+    "de": "German"
+  },
+  "album": {
+    "artist": "Artist",
+    "year": "Year",
+    "genre": "Genre",
+    "price": "Price"
+  },
+  "loading": {
+    "albums": "Loading albums..."
+  },
+  "errors": {
+    "loadFailed": "Failed to load albums",
+    "retry": "Retry"
+  },
+  "actions": {
+    "addToCart": "Add to Cart",
+    "preview": "Preview"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "items": "Items",
+    "total": "Total",
+    "remove": "Remove",
+    "clear": "Clear Cart",
+    "quantity": "Quantity",
+    "close": "Close"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "app": {
+    "title": "Visionneuse d'albums",
+    "subtitle": "Découvrez des albums de musique incroyables",
+    "pageTitle": "Visionneuse d'albums - Découvrez la musique"
+  },
+  "currency": {
+    "symbol": "€"
+  },
+  "language": {
+    "label": "Langue",
+    "en": "Anglais",
+    "fr": "Français",
+    "de": "Allemand"
+  },
+  "album": {
+    "artist": "Artiste",
+    "year": "Année",
+    "genre": "Genre",
+    "price": "Prix"
+  },
+  "loading": {
+    "albums": "Chargement des albums..."
+  },
+  "errors": {
+    "loadFailed": "Échec du chargement des albums",
+    "retry": "Réessayer"
+  },
+  "actions": {
+    "addToCart": "Ajouter au panier",
+    "preview": "Aperçu"
+  },
+  "cart": {
+    "title": "Panier",
+    "empty": "Votre panier est vide",
+    "items": "Articles",
+    "total": "Total",
+    "remove": "Retirer",
+    "clear": "Vider le panier",
+    "quantity": "Quantité",
+    "close": "Fermer"
+  }
+}

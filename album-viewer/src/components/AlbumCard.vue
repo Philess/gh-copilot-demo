@@ -16,25 +16,32 @@
       <h3 class="album-title">{{ album.title }}</h3>
       <p class="album-artist">{{ album.artist }}</p>
       <div class="album-price">
-        <span class="price">${{ album.price.toFixed(2) }}</span>
+        <span class="price">{{ $t('album.price') }}: {{ $t('currency.symbol') }}{{ album.price.toFixed(2) }}</span>
       </div>
     </div>
     
     <div class="album-actions">
-      <button class="btn btn-primary">Add to Cart</button>
-      <button class="btn btn-secondary">Preview</button>
+      <button class="btn btn-primary" @click="addToCart">{{ $t('actions.addToCart') }}</button>
+      <button class="btn btn-secondary">{{ $t('actions.preview') }}</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Album } from '../types/album'
+import { useCart } from '../composables/useCart'
 
 interface Props {
   album: Album
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+const { add } = useCart()
+
+function addToCart() {
+  add(props.album)
+}
 
 const handleImageError = (event: Event): void => {
   const target = event.target as HTMLImageElement

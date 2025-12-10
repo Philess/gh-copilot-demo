@@ -1,0 +1,43 @@
+{
+  "app": {
+    "title": "Albumanzeige",
+    "subtitle": "Entdecke großartige Musikalben",
+    "pageTitle": "Albumanzeige - Musik entdecken"
+  },
+  "currency": {
+    "symbol": "€"
+  },
+  "language": {
+    "label": "Sprache",
+    "en": "Englisch",
+    "fr": "Französisch",
+    "de": "Deutsch"
+  },
+  "album": {
+    "artist": "Künstler",
+    "year": "Jahr",
+    "genre": "Genre",
+    "price": "Preis"
+  },
+  "loading": {
+    "albums": "Alben werden geladen..."
+  },
+  "errors": {
+    "loadFailed": "Alben konnten nicht geladen werden",
+    "retry": "Erneut versuchen"
+  },
+  "actions": {
+    "addToCart": "In den Warenkorb",
+    "preview": "Vorschau"
+  },
+  "cart": {
+    "title": "Warenkorb",
+    "empty": "Ihr Warenkorb ist leer",
+    "items": "Artikel",
+    "total": "Gesamt",
+    "remove": "Entfernen",
+    "clear": "Warenkorb leeren",
+    "quantity": "Menge",
+    "close": "Schließen"
+  }
+}
