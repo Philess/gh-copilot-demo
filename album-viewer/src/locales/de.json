@@ -1,0 +1,38 @@
+{
+  "app": {
+    "title": "Album-Sammlung",
+    "subtitle": "Entdecken Sie erstaunliche Musikalben"
+  },
+  "loading": {
+    "message": "Alben werden geladen..."
+  },
+  "error": {
+    "message": "Fehler beim Laden der Alben. Bitte stellen Sie sicher, dass die API läuft.",
+    "retry": "Erneut versuchen"
+  },
+  "album": {
+    "addToCart": "In den Warenkorb",
+    "inCart": "Im Warenkorb",
+    "added": "Hinzugefügt ✓",
+    "preview": "Vorschau"
+  },
+  "cart": {
+    "title": "Warenkorb",
+    "items": "Artikel",
+    "item": "Artikel",
+    "total": "Gesamt",
+    "empty": "Ihr Warenkorb ist leer",
+    "emptyDescription": "Beginnen Sie, Alben zu Ihrer Sammlung hinzuzufügen",
+    "remove": "Entfernen",
+    "addedToCart": "Album zum Warenkorb hinzugefügt",
+    "removedFromCart": "Album aus dem Warenkorb entfernt",
+    "clearCart": "Warenkorb leeren",
+    "close": "Schließen"
+  },
+  "language": {
+    "select": "Sprache",
+    "en": "Englisch",
+    "fr": "Französisch",
+    "de": "Deutsch"
+  }
+}

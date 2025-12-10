@@ -1,0 +1,38 @@
+{
+  "app": {
+    "title": "Album Collection",
+    "subtitle": "Discover amazing music albums"
+  },
+  "loading": {
+    "message": "Loading albums..."
+  },
+  "error": {
+    "message": "Failed to load albums. Please make sure the API is running.",
+    "retry": "Try Again"
+  },
+  "album": {
+    "addToCart": "Add to Cart",
+    "inCart": "In Cart",
+    "added": "Added ✓",
+    "preview": "Preview"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "items": "items",
+    "item": "item",
+    "total": "Total",
+    "empty": "Your cart is empty",
+    "emptyDescription": "Start adding albums to your collection",
+    "remove": "Remove",
+    "addedToCart": "Album added to cart",
+    "removedFromCart": "Album removed from cart",
+    "clearCart": "Clear Cart",
+    "close": "Close"
+  },
+  "language": {
+    "select": "Language",
+    "en": "English",
+    "fr": "French",
+    "de": "German"
+  }
+}

@@ -1,19 +1,29 @@
 <template>
   <div class="app">
     <header class="header">
-      <h1>🎵 Album Collection</h1>
-      <p>Discover amazing music albums</p>
+      <div class="header-content">
+        <div class="header-text">
+          <h1>🎵 {{ t('app.title') }}</h1>
+          <p>{{ t('app.subtitle') }}</p>
+        </div>
+        <div class="header-actions">
+          <CartIcon />
+          <LanguageSelector />
+        </div>
+      </div>
     </header>
+
+    <CartPanel />
 
     <main class="main">
       <div v-if="loading" class="loading">
         <div class="spinner"></div>
-        <p>Loading albums...</p>
+        <p>{{ t('loading.message') }}</p>
       </div>
 
       <div v-else-if="error" class="error">
-        <p>{{ error }}</p>
-        <button @click="fetchAlbums" class="retry-btn">Try Again</button>
+        <p>{{ t('error.message') }}</p>
+        <button @click="fetchAlbums" class="retry-btn">{{ t('error.retry') }}</button>
       </div>
 
       <div v-else class="albums-grid">
@@ -29,10 +39,15 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 import AlbumCard from './components/AlbumCard.vue'
+import LanguageSelector from './components/LanguageSelector.vue'
+import CartIcon from './components/CartIcon.vue'
+import CartPanel from './components/CartPanel.vue'
 import type { Album } from './types/album'
 
+const { t } = useI18n()
 const albums = ref<Album[]>([])
 const loading = ref<boolean>(true)
 const error = ref<string | null>(null)
@@ -44,7 +59,7 @@ const fetchAlbums = async (): Promise<void> => {
     const response = await axios.get<Album[]>('/albums')
     albums.value = response.data
   } catch (err) {
-    error.value = 'Failed to load albums. Please make sure the API is running.'
+    error.value = 'error'
     console.error('Error fetching albums:', err)
   } finally {
     loading.value = false
@@ -63,9 +78,28 @@ onMounted(() => {
 }
 
 .header {
-  text-align: center;
   margin-bottom: 3rem;
   color: white;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+.header-text {
+  text-align: center;
+  flex: 1;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .header h1 {
@@ -145,6 +179,11 @@ onMounted(() => {
 @media (max-width: 768px) {
   .app {
     padding: 1rem;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
   }
   
   .header h1 {

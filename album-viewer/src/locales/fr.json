@@ -1,0 +1,38 @@
+{
+  "app": {
+    "title": "Collection d'Albums",
+    "subtitle": "Découvrez des albums musicaux incroyables"
+  },
+  "loading": {
+    "message": "Chargement des albums..."
+  },
+  "error": {
+    "message": "Échec du chargement des albums. Veuillez vous assurer que l'API fonctionne.",
+    "retry": "Réessayer"
+  },
+  "album": {
+    "addToCart": "Ajouter au panier",
+    "inCart": "Dans le panier",
+    "added": "Ajouté ✓",
+    "preview": "Aperçu"
+  },
+  "cart": {
+    "title": "Panier",
+    "items": "articles",
+    "item": "article",
+    "total": "Total",
+    "empty": "Votre panier est vide",
+    "emptyDescription": "Commencez à ajouter des albums à votre collection",
+    "remove": "Supprimer",
+    "addedToCart": "Album ajouté au panier",
+    "removedFromCart": "Album retiré du panier",
+    "clearCart": "Vider le panier",
+    "close": "Fermer"
+  },
+  "language": {
+    "select": "Langue",
+    "en": "Anglais",
+    "fr": "Français",
+    "de": "Allemand"
+  }
+}
