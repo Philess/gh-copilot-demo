@@ -2,14 +2,19 @@
   <div class="app">
     <header class="header">
       <h1>🎵 {{ t('app.title') }}</h1>
-      <p>{{ t('album.by') }} • {{ t('album.price') }}</p>
-      <div class="lang-select">
-        <label for="lang">{{ t('app.language') }}:</label>
-        <select id="lang" v-model="locale">
-          <option value="en">{{ t('app.lang.en') }}</option>
-          <option value="fr">{{ t('app.lang.fr') }}</option>
-          <option value="de">{{ t('app.lang.de') }}</option>
-        </select>
+      <p>{{ t('subtitle') || 'Discover amazing music albums' }}</p>
+      <div class="header-controls">
+        <div class="lang-select">
+          <label for="lang">{{ t('app.language') }}:</label>
+          <select id="lang" v-model="locale">
+            <option value="en">{{ t('app.lang.en') }}</option>
+            <option value="fr">{{ t('app.lang.fr') }}</option>
+            <option value="de">{{ t('app.lang.de') }}</option>
+          </select>
+        </div>
+        <button class="cart-icon" @click="isCartOpen = !isCartOpen">
+          🛒 <span class="badge">{{ count }}</span>
+        </button>
       </div>
     </header>
 
@@ -31,6 +36,7 @@
           :album="album" 
         />
       </div>
+      <CartPanel :open="isCartOpen" @close="isCartOpen = false" />
     </main>
   </div>
 </template>
@@ -38,6 +44,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import CartPanel from './components/CartPanel.vue'
+import { useCart } from './composables/useCart'
 import axios from 'axios'
 import AlbumCard from './components/AlbumCard.vue'
 import type { Album } from './types/album'
@@ -46,6 +54,8 @@ const albums = ref<Album[]>([])
 const loading = ref<boolean>(true)
 const error = ref<string | null>(null)
 const { t, locale } = useI18n()
+const { count } = useCart()
+const isCartOpen = ref(false)
 
 const fetchAlbums = async (): Promise<void> => {
   try {
@@ -78,9 +88,10 @@ onMounted(() => {
   color: white;
 }
 
-.lang-select {
-  margin-top: 1rem;
-}
+.header-controls { display: flex; gap: 1rem; justify-content: center; align-items: center; margin-top: 1rem; }
+.lang-select { display: flex; gap: 0.5rem; align-items: center; }
+.cart-icon { background: rgba(255, 255, 255, 0.2); color: white; border: 2px solid white; padding: 0.5rem 0.75rem; border-radius: 25px; cursor: pointer; }
+.cart-icon .badge { background: white; color: #667eea; padding: 0.1rem 0.4rem; border-radius: 10px; margin-left: 0.4rem; font-weight: 700; }
 
 .header h1 {
   font-size: 3rem;
