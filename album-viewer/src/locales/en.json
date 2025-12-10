@@ -1,0 +1,37 @@
+{
+  "header": {
+    "title": "🎵 Album Collection",
+    "subtitle": "Discover amazing music albums"
+  },
+  "loading": {
+    "message": "Loading albums..."
+  },
+  "error": {
+    "message": "Failed to load albums. Please make sure the API is running.",
+    "retry": "Try Again"
+  },
+  "albumCard": {
+    "price": "Price",
+    "addToCart": "Add to Cart",
+    "inCart": "In Cart ✓",
+    "preview": "Preview"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "items": "items",
+    "empty": "Your cart is empty",
+    "addToCart": "Add to Cart",
+    "inCart": "In Cart ✓",
+    "removeFromCart": "Remove",
+    "clearCart": "Clear Cart",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "checkout": "Proceed to Checkout"
+  },
+  "language": {
+    "select": "Language",
+    "en": "English",
+    "fr": "French",
+    "de": "German"
+  }
+}

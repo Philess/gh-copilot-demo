@@ -1,0 +1,37 @@
+{
+  "header": {
+    "title": "🎵 Album-Sammlung",
+    "subtitle": "Entdecken Sie fantastische Musikalben"
+  },
+  "loading": {
+    "message": "Alben werden geladen..."
+  },
+  "error": {
+    "message": "Alben konnten nicht geladen werden. Bitte stellen Sie sicher, dass die API läuft.",
+    "retry": "Erneut Versuchen"
+  },
+  "albumCard": {
+    "price": "Preis",
+    "addToCart": "In den Warenkorb",
+    "inCart": "Im Warenkorb ✓",
+    "preview": "Vorschau"
+  },
+  "cart": {
+    "title": "Warenkorb",
+    "items": "Artikel",
+    "empty": "Ihr Warenkorb ist leer",
+    "addToCart": "In den Warenkorb",
+    "inCart": "Im Warenkorb ✓",
+    "removeFromCart": "Entfernen",
+    "clearCart": "Warenkorb leeren",
+    "subtotal": "Zwischensumme",
+    "total": "Gesamt",
+    "checkout": "Zur Kasse"
+  },
+  "language": {
+    "select": "Sprache",
+    "en": "Englisch",
+    "fr": "Französisch",
+    "de": "Deutsch"
+  }
+}

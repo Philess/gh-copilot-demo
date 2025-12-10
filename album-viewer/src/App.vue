@@ -1,19 +1,29 @@
 <template>
   <div class="app">
     <header class="header">
-      <h1>🎵 Album Collection</h1>
-      <p>Discover amazing music albums</p>
+      <div class="header-content">
+        <div class="header-text">
+          <h1>{{ t.header.title }}</h1>
+          <p>{{ t.header.subtitle }}</p>
+        </div>
+        <div class="header-controls">
+          <LanguageSelector />
+          <CartIcon :is-open="isCartOpen" @toggle="isCartOpen = !isCartOpen" />
+        </div>
+      </div>
     </header>
+
+    <CartDrawer :is-open="isCartOpen" @close="isCartOpen = false" />
 
     <main class="main">
       <div v-if="loading" class="loading">
         <div class="spinner"></div>
-        <p>Loading albums...</p>
+        <p>{{ t.loading.message }}</p>
       </div>
 
       <div v-else-if="error" class="error">
-        <p>{{ error }}</p>
-        <button @click="fetchAlbums" class="retry-btn">Try Again</button>
+        <p>{{ t.error.message }}</p>
+        <button @click="fetchAlbums" class="retry-btn">{{ t.error.retry }}</button>
       </div>
 
       <div v-else class="albums-grid">
@@ -31,11 +41,18 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import AlbumCard from './components/AlbumCard.vue'
+import LanguageSelector from './components/LanguageSelector.vue'
+import CartIcon from './components/CartIcon.vue'
+import CartDrawer from './components/CartDrawer.vue'
 import type { Album } from './types/album'
+import { useI18n } from './composables/useI18n'
+
+const { t } = useI18n()
 
 const albums = ref<Album[]>([])
 const loading = ref<boolean>(true)
 const error = ref<string | null>(null)
+const isCartOpen = ref<boolean>(false)
 
 const fetchAlbums = async (): Promise<void> => {
   try {
@@ -44,7 +61,7 @@ const fetchAlbums = async (): Promise<void> => {
     const response = await axios.get<Album[]>('/albums')
     albums.value = response.data
   } catch (err) {
-    error.value = 'Failed to load albums. Please make sure the API is running.'
+    error.value = t.value.error.message
     console.error('Error fetching albums:', err)
   } finally {
     loading.value = false
@@ -66,6 +83,26 @@ onMounted(() => {
   text-align: center;
   margin-bottom: 3rem;
   color: white;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+.header-text {
+  flex: 1;
+  text-align: center;
+}
+
+.header-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 .header h1 {
@@ -145,6 +182,11 @@ onMounted(() => {
 @media (max-width: 768px) {
   .app {
     padding: 1rem;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
   }
   
   .header h1 {

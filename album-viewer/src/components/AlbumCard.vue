@@ -21,20 +21,38 @@
     </div>
     
     <div class="album-actions">
-      <button class="btn btn-primary">Add to Cart</button>
-      <button class="btn btn-secondary">Preview</button>
+      <button 
+        class="btn btn-primary"
+        :class="{ 'in-cart': isInCart }"
+        @click="handleAddToCart"
+      >
+        {{ isInCart ? t.albumCard.inCart : t.albumCard.addToCart }}
+      </button>
+      <button class="btn btn-secondary">{{ t.albumCard.preview }}</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Album } from '../types/album'
+import { useI18n } from '../composables/useI18n'
+import { useCart } from '../composables/useCart'
+import { computed } from 'vue'
 
 interface Props {
   album: Album
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+const { t } = useI18n()
+const { addToCart, isInCart } = useCart()
+
+const isAlbumInCart = computed(() => isInCart(props.album.id))
+
+const handleAddToCart = () => {
+  addToCart(props.album, 1)
+}
 
 const handleImageError = (event: Event): void => {
   const target = event.target as HTMLImageElement
@@ -165,6 +183,16 @@ const handleImageError = (event: Event): void => {
 .btn-primary:hover {
   background: #5a6fd8;
   transform: translateY(-2px);
+}
+
+.btn-primary.in-cart {
+  background: #4caf50;
+  opacity: 0.8;
+}
+
+.btn-primary.in-cart:hover {
+  background: #45a049;
+  opacity: 1;
 }
 
 .btn-secondary {

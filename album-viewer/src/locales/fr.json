@@ -1,0 +1,37 @@
+{
+  "header": {
+    "title": "🎵 Collection d'Albums",
+    "subtitle": "Découvrez des albums de musique incroyables"
+  },
+  "loading": {
+    "message": "Chargement des albums..."
+  },
+  "error": {
+    "message": "Échec du chargement des albums. Veuillez vous assurer que l'API est en cours d'exécution.",
+    "retry": "Réessayer"
+  },
+  "albumCard": {
+    "price": "Prix",
+    "addToCart": "Ajouter au Panier",
+    "inCart": "Dans le Panier ✓",
+    "preview": "Aperçu"
+  },
+  "cart": {
+    "title": "Panier d'Achat",
+    "items": "articles",
+    "empty": "Votre panier est vide",
+    "addToCart": "Ajouter au Panier",
+    "inCart": "Dans le Panier ✓",
+    "removeFromCart": "Retirer",
+    "clearCart": "Vider le Panier",
+    "subtotal": "Sous-total",
+    "total": "Total",
+    "checkout": "Procéder au Paiement"
+  },
+  "language": {
+    "select": "Langue",
+    "en": "Anglais",
+    "fr": "Français",
+    "de": "Allemand"
+  }
+}
