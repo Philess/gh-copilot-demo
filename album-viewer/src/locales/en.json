@@ -1,0 +1,21 @@
+{
+  "app": {
+    "title": "Album Viewer",
+    "language": "Language",
+    "lang": {
+      "en": "English",
+      "fr": "French",
+      "de": "German"
+    }
+  },
+  "album": {
+    "price": "Price",
+    "by": "By"
+  },
+  "actions": {
+    "addToCart": "Add to Cart",
+    "preview": "Preview"
+  },
+  "loading": "Loading albums...",
+  "retry": "Try Again"
+}

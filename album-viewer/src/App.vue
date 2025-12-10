@@ -1,19 +1,27 @@
 <template>
   <div class="app">
     <header class="header">
-      <h1>🎵 Album Collection</h1>
-      <p>Discover amazing music albums</p>
+      <h1>🎵 {{ t('app.title') }}</h1>
+      <p>{{ t('album.by') }} • {{ t('album.price') }}</p>
+      <div class="lang-select">
+        <label for="lang">{{ t('app.language') }}:</label>
+        <select id="lang" v-model="locale">
+          <option value="en">{{ t('app.lang.en') }}</option>
+          <option value="fr">{{ t('app.lang.fr') }}</option>
+          <option value="de">{{ t('app.lang.de') }}</option>
+        </select>
+      </div>
     </header>
 
     <main class="main">
       <div v-if="loading" class="loading">
         <div class="spinner"></div>
-        <p>Loading albums...</p>
+        <p>{{ t('loading') || 'Loading albums...' }}</p>
       </div>
 
       <div v-else-if="error" class="error">
         <p>{{ error }}</p>
-        <button @click="fetchAlbums" class="retry-btn">Try Again</button>
+        <button @click="fetchAlbums" class="retry-btn">{{ t('retry') || 'Try Again' }}</button>
       </div>
 
       <div v-else class="albums-grid">
@@ -29,6 +37,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 import AlbumCard from './components/AlbumCard.vue'
 import type { Album } from './types/album'
@@ -36,6 +45,7 @@ import type { Album } from './types/album'
 const albums = ref<Album[]>([])
 const loading = ref<boolean>(true)
 const error = ref<string | null>(null)
+const { t, locale } = useI18n()
 
 const fetchAlbums = async (): Promise<void> => {
   try {
@@ -66,6 +76,10 @@ onMounted(() => {
   text-align: center;
   margin-bottom: 3rem;
   color: white;
+}
+
+.lang-select {
+  margin-top: 1rem;
 }
 
 .header h1 {

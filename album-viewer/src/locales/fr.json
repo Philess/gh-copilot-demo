@@ -1,0 +1,21 @@
+{
+  "app": {
+    "title": "Visionneuse d'albums",
+    "language": "Langue",
+    "lang": {
+      "en": "Anglais",
+      "fr": "Français",
+      "de": "Allemand"
+    }
+  },
+  "album": {
+    "price": "Prix",
+    "by": "Par"
+  },
+  "actions": {
+    "addToCart": "Ajouter au panier",
+    "preview": "Aperçu"
+  },
+  "loading": "Chargement des albums...",
+  "retry": "Réessayer"
+}

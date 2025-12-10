@@ -1,0 +1,21 @@
+{
+  "app": {
+    "title": "Albumanzeige",
+    "language": "Sprache",
+    "lang": {
+      "en": "Englisch",
+      "fr": "Französisch",
+      "de": "Deutsch"
+    }
+  },
+  "album": {
+    "price": "Preis",
+    "by": "Von"
+  },
+  "actions": {
+    "addToCart": "In den Warenkorb",
+    "preview": "Vorschau"
+  },
+  "loading": "Alben werden geladen...",
+  "retry": "Erneut versuchen"
+}
