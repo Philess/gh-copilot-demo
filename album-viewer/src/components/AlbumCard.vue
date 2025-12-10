@@ -21,20 +21,46 @@
     </div>
     
     <div class="album-actions">
-      <button class="btn btn-primary">Add to Cart</button>
-      <button class="btn btn-secondary">Preview</button>
+      <button 
+        class="btn" 
+        :class="inCart ? 'btn-in-cart' : 'btn-primary'"
+        @click="handleAddToCart"
+        :disabled="inCart"
+      >
+        <span v-if="inCart">✓ {{ t.cart.inCart }}</span>
+        <span v-else>{{ t.album.addToCart }}</span>
+      </button>
+      <button class="btn btn-secondary">{{ t.album.preview }}</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { Album } from '../types/album'
+import { useI18n } from '../i18n'
+import { useCart } from '../composables/useCart'
+
+const { t } = useI18n()
+const { addToCart, isInCart } = useCart()
 
 interface Props {
   album: Album
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+const inCart = computed(() => isInCart(props.album.id))
+
+const handleAddToCart = () => {
+  if (!inCart.value) {
+    const added = addToCart(props.album)
+    if (added) {
+      // Optional: could show a toast notification here
+      console.log('Added to cart:', props.album.title)
+    }
+  }
+}
 
 const handleImageError = (event: Event): void => {
   const target = event.target as HTMLImageElement
@@ -177,6 +203,22 @@ const handleImageError = (event: Event): void => {
   background: #667eea;
   color: white;
   transform: translateY(-2px);
+}
+
+.btn-in-cart {
+  background: #27ae60;
+  color: white;
+  cursor: default;
+}
+
+.btn-in-cart:hover {
+  background: #27ae60;
+  transform: none;
+}
+
+.btn:disabled {
+  opacity: 0.9;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
