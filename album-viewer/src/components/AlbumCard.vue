@@ -21,7 +21,7 @@
     </div>
     
     <div class="album-actions">
-      <button class="btn btn-primary">Add to Cart</button>
+      <button class="btn btn-primary" @click="toggleCart" :disabled="isInCart">{{ isInCart ? 'Added' : 'Add to Cart' }}</button>
       <button class="btn btn-secondary">Preview</button>
     </div>
   </div>
@@ -35,6 +35,17 @@ interface Props {
 }
 
 defineProps<Props>()
+
+import { computed } from 'vue'
+import { useCart } from '../composables/useCart'
+
+const { addToCart, items } = useCart()
+
+const isInCart = computed(() => items.value.some(a => a.id === album.id))
+
+function toggleCart() {
+  if (!isInCart.value) addToCart(album)
+}
 
 const handleImageError = (event: Event): void => {
   const target = event.target as HTMLImageElement

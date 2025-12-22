@@ -3,6 +3,8 @@
     <header class="header">
       <h1>🎵 Album Collection</h1>
       <p>Discover amazing music albums</p>
+      <CartIcon @open="openCart" />
+      <CartDrawer v-if="cartOpen" @close="cartOpen = false" />
     </header>
 
     <main class="main">
@@ -31,7 +33,15 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import AlbumCard from './components/AlbumCard.vue'
+import CartIcon from './components/CartIcon.vue'
+import CartDrawer from './components/CartDrawer.vue'
 import type { Album } from './types/album'
+
+const cartOpen = ref(false)
+
+function openCart() {
+  cartOpen.value = true
+}
 
 const albums = ref<Album[]>([])
 const loading = ref<boolean>(true)
