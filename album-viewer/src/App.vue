@@ -36,7 +36,7 @@ import type { Album } from './types/album'
 const albums = ref<Album[]>([])
 const loading = ref<boolean>(true)
 const error = ref<string | null>(null)
-
+// Function to fetch albums from the API
 const fetchAlbums = async (): Promise<void> => {
   try {
     loading.value = true
@@ -50,7 +50,7 @@ const fetchAlbums = async (): Promise<void> => {
     loading.value = false
   }
 }
-
+// Fetch albums when the component is mounted
 onMounted(() => {
   fetchAlbums()
 })
