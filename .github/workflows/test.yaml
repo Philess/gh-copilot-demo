@@ -1,0 +1,57 @@
+name: Test CI
+
+on:
+    pull_request:
+        branches:
+            - main
+            - develop
+
+jobs:
+    test-api:
+        name: Test .NET API
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: "8.0.x"
+
+            - name: Restore dependencies
+              run: dotnet restore albums-api/albums-api.csproj
+
+            - name: Build
+              run: dotnet build albums-api/albums-api.csproj --no-restore
+
+            - name: Test
+              run: dotnet test albums-api/albums-api.csproj --no-build --verbosity normal
+
+    test-frontend:
+        name: Test Vue.js Frontend
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20"
+                  cache: "npm"
+                  cache-dependency-path: album-viewer/package-lock.json
+
+            - name: Install dependencies
+              working-directory: album-viewer
+              run: npm ci
+
+            - name: Run tests
+              working-directory: album-viewer
+              run: npm test
+
+            - name: Type check
+              working-directory: album-viewer
+              run: npm run type-check

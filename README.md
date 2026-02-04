@@ -1,13 +1,12 @@
-# Github Copilot demo 
+# Github Copilot demo
 
 ## Demo Scenarios
 
 ### To start discovering Github Copilot jump to [`The Ultimate GitHub Copilot Tutorial on MOAW`](https://aka.ms/github-copilot-hol)
+
 <br/>
 
-
 ## Solution Overview
-
 
 This repository has been inspired by the [Azure Container Apps: Dapr Albums Sample](https://github.com/Azure-Samples/containerapps-dapralbums)
 
@@ -15,10 +14,9 @@ It's used as a code base to demonstrate Github Copilot capabilities.
 
 The solution is composed of two services: the .net album API and the NodeJS album viewer.
 
-
 ### Album API (`album-api`)
 
-The [`album-api`](./album-api) is an .NET 8 minimal Web API that manage a list of Albums in memory.
+The [`album-api`](./album-api) is an .NET 10 minimal Web API that manage a list of Albums in memory.
 
 ### Album Viewer (`album-viewer`)
 
@@ -30,7 +28,7 @@ There are multiple ways to run this solution locally. Choose the method that bes
 
 ### Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - [Node.js](https://nodejs.org/) (version 16 or higher)
 - [TypeScript](https://www.typescriptlang.org/) (automatically installed with project dependencies)
 - [Visual Studio Code](https://code.visualstudio.com/) (recommended)
@@ -45,11 +43,13 @@ This is the easiest way to run the solution with full debugging capabilities.
 4. Click the green play button or press F5
 
 This will automatically:
+
 - Build the .NET API and start it on `http://localhost:3000`
 - Start the Vue.js TypeScript app on `http://localhost:3001`
 - Open both services in your default browser
 
 You can also run individual services:
+
 - **"C#: Album API Debug"** - Runs only the .NET API
 - **"Node.js: Album Viewer Debug"** - Runs only the Vue.js TypeScript frontend
 
@@ -111,6 +111,7 @@ The solution uses the following default configuration:
 - **API Endpoint**: The Vue app is configured to call the API at `localhost:3000`
 
 If you need to change these settings, you can modify:
+
 - API port: `albums-api/Properties/launchSettings.json`
 - Vue app configuration: Environment variables in `.vscode/launch.json` or set `VITE_ALBUM_API_HOST` environment variable
 
