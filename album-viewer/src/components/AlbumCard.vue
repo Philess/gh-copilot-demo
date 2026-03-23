@@ -9,15 +9,15 @@
       />
       <div class="play-overlay">
         <div class="play-button">▶</div>
-      </div>
-    </div>
-    
-    <div class="album-info">
-      <h3 class="album-title">{{ album.title }}</h3>
-      <p class="album-artist">{{ album.artist }}</p>
-      <div class="album-price">
-        <span class="price">${{ album.price.toFixed(2) }}</span>
-      </div>
+    <div class="album-actions">
+      <button 
+        class="btn btn-primary" 
+        @click="handleAddToCart"
+        :aria-label="'Add ' + album.title + ' to cart'"
+      >
+        {{ cartButtonText }}
+      </button>
+      <button class="btn btn-secondary">Preview</button>
     </div>
     
     <div class="album-actions">
@@ -31,6 +31,12 @@
       </button>
       <button class="btn btn-secondary">Preview</button>
     </div>
+      <div class="album-actions">
+        <button class="btn btn-primary" @click="handleAddToCart" :aria-label="'Add ' + album.title + ' to cart'">
+          {{ cartButtonText }}
+        </button>
+        <button class="btn btn-secondary">Preview</button>
+      </div>
   </div>
 </template>
 
@@ -49,6 +55,41 @@ withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   'add-to-cart': [album: Album]
 }>()
+
+const handleImageError = (event: Event): void => {
+  const target = event.target as HTMLImageElement
+  target.src = 'https://via.placeholder.com/300x300/667eea/white?text=Album+Cover'
+}
+import { ref } from 'vue'
+import type { Album } from '../types/album'
+import { useCart } from '../composables/useCart'
+
+interface Props {
+  album: Album
+}
+
+defineProps<Props>()
+
+const { addToCart, isInCart } = useCart()
+const addedToCart = ref<boolean>(false)
+
+const handleAddToCart = (): void => {
+  addToCart(album)
+  addedToCart.value = true
+  setTimeout(() => {
+    addedToCart.value = false
+  }, 2000)
+}
+
+const cartButtonText = ref('Add to Cart')
+
+const updateButtonText = (): void => {
+  if (isInCart(album.id)) {
+    cartButtonText.value = '✓ In Cart'
+  } else {
+    cartButtonText.value = 'Add to Cart'
+  }
+}
 
 const handleImageError = (event: Event): void => {
   const target = event.target as HTMLImageElement
@@ -89,54 +130,36 @@ const handleImageError = (event: Event): void => {
 
 .play-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import type { Album } from '../types/album'
+import { useCart } from '../composables/useCart'
+
+interface Props {
+  album: Album
 }
 
-.album-card:hover .play-overlay {
-  opacity: 1;
+defineProps<Props>()
+
+const { addToCart, isInCart } = useCart()
+const justAdded = ref<boolean>(false)
+
+const handleAddToCart = (): void => {
+  addToCart(album)
+  justAdded.value = true
+  setTimeout(() => {
+    justAdded.value = false
+  }, 2000)
 }
 
-.play-button {
-  width: 60px;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: #667eea;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+const cartButtonText = computed(() => {
+  return justAdded.value ? '✓ Added!' : isInCart(album.id) ? '✓ In Cart' : 'Add to Cart'
+})
 
-.play-button:hover {
-  background: white;
-  transform: scale(1.1);
+const handleImageError = (event: Event): void => {
+  const target = event.target as HTMLImageElement
+  target.src = 'https://via.placeholder.com/300x300/667eea/white?text=Album+Cover'
 }
-
-.album-info {
-  padding: 1.5rem;
-}
-
-.album-title {
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: #333;
-  margin: 0 0 0.5rem 0;
-  line-height: 1.3;
-}
-
-.album-artist {
   color: #666;
   font-size: 1rem;
   margin: 0 0 1rem 0;

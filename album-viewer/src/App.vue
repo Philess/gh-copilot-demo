@@ -11,6 +11,11 @@
       </button>
     </header>
 
+    <CartPanel 
+      v-if="showCartPanel" 
+      @close="toggleCartPanel"
+    />
+
     <main class="main">
       <div v-if="loading" class="loading">
         <div class="spinner"></div>
@@ -100,6 +105,17 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+}
+
+.header-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.header-title {
+  flex: 1;
 }
 
 .header h1 {
@@ -230,6 +246,12 @@ onMounted(() => {
     align-items: flex-start;
   }
   
+  .header-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
   .header h1 {
     font-size: 2rem;
   }
@@ -241,6 +263,12 @@ onMounted(() => {
   .albums-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+
+  .cart-icon-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
   }
 }
 </style>
