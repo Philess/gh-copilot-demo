@@ -129,3 +129,18 @@ output env array=[
   'Storage account name: ${storageAccount.name}'
   'Storage container name: ${blobContainer.name}'
 ]
+
+// Container Registry for hosting container images - using secure parameters to pass credentials
+
+// Azure Open AI resource for Copilot demo - not used in this sample, but deployed to show how to deploy a secure parameter and use it in a module.
+resource azureOpenAI 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
+  name: 'aoai-${uniqueSuffix}'
+  location: location
+  kind: 'OpenAI'
+  sku: {
+    name: 'S0'
+  }
+  properties: {
+    publicNetworkAccess: 'Enabled'
+  }
+}
