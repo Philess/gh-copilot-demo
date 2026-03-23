@@ -1,8 +1,14 @@
 <template>
   <div class="app">
     <header class="header">
-      <h1>🎵 Album Collection</h1>
-      <p>Discover amazing music albums</p>
+      <div>
+        <h1>🎵 Album Collection</h1>
+        <p>Discover amazing music albums</p>
+      </div>
+      <button class="cart-toggle" type="button" aria-label="Toggle cart" @click="toggleCart">
+        <span class="cart-icon">🛒</span>
+        <span v-if="itemCount > 0" class="cart-badge">{{ itemCount }}</span>
+      </button>
     </header>
 
     <main class="main">
@@ -21,9 +27,20 @@
           v-for="album in albums" 
           :key="album.id" 
           :album="album" 
+          :is-in-cart="isInCart(album.id)"
+          @add-to-cart="addToCart"
         />
       </div>
     </main>
+
+    <div v-if="isCartOpen" class="cart-backdrop" @click="closeCart"></div>
+    <CartPanel
+      :items="items"
+      :item-count="itemCount"
+      :open="isCartOpen"
+      @close="closeCart"
+      @remove="removeFromCart"
+    />
   </div>
 </template>
 
@@ -31,11 +48,15 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import AlbumCard from './components/AlbumCard.vue'
+import CartPanel from './components/CartPanel.vue'
+import { useCart } from './composables/useCart'
 import type { Album } from './types/album'
 
 const albums = ref<Album[]>([])
 const loading = ref<boolean>(true)
 const error = ref<string | null>(null)
+const isCartOpen = ref<boolean>(false)
+const { items, itemCount, addToCart, removeFromCart, isInCart } = useCart()
 
 // Fetch albums from the API
 const fetchAlbums = async (): Promise<void> => {
@@ -50,6 +71,14 @@ const fetchAlbums = async (): Promise<void> => {
   } finally {
     loading.value = false
   }
+}
+
+const toggleCart = (): void => {
+  isCartOpen.value = !isCartOpen.value
+}
+
+const closeCart = (): void => {
+  isCartOpen.value = false
 }
 
 onMounted(() => {
@@ -67,6 +96,10 @@ onMounted(() => {
   text-align: center;
   margin-bottom: 3rem;
   color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
 
 .header h1 {
@@ -80,9 +113,54 @@ onMounted(() => {
   opacity: 0.9;
 }
 
+.cart-toggle {
+  position: relative;
+  border: none;
+  background: rgba(255, 255, 255, 0.16);
+  color: white;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.22);
+}
+
+.cart-toggle:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.cart-icon {
+  font-size: 1.5rem;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ff8c42;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 .main {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.cart-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.32);
+  z-index: 10;
 }
 
 .loading {
@@ -147,9 +225,17 @@ onMounted(() => {
   .app {
     padding: 1rem;
   }
+
+  .header {
+    align-items: flex-start;
+  }
   
   .header h1 {
     font-size: 2rem;
+  }
+
+  .header p {
+    margin-bottom: 0;
   }
   
   .albums-grid {
