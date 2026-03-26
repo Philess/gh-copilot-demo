@@ -9,6 +9,12 @@ router.get("/", (_req: Request, res: Response) => {
 
 router.get("/:id", (req: Request, res: Response) => {
   const id = parseInt(req.params.id, 10);
+
+  if (isNaN(id)) {
+    res.status(400).json({ message: "Invalid album id" });
+    return;
+  }
+
   const album = albums.find((a) => a.id === id);
 
   if (!album) {
