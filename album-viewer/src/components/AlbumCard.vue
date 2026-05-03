@@ -15,6 +15,7 @@
     <div class="album-info">
       <h3 class="album-title">{{ album.title }}</h3>
       <p class="album-artist">{{ album.artist }}</p>
+      <p class="album-year">{{ album.year }}</p>
       <div class="album-price">
         <span class="price">${{ album.price.toFixed(2) }}</span>
       </div>
@@ -125,7 +126,14 @@ const handleImageError = (event: Event): void => {
 .album-artist {
   color: #666;
   font-size: 1rem;
+  margin: 0 0 0.25rem 0;
+}
+
+.album-year {
+  color: #999;
+  font-size: 0.9rem;
   margin: 0 0 1rem 0;
+  font-style: italic;
 }
 
 .album-price {
