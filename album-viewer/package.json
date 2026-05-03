@@ -8,10 +8,16 @@
     "preview": "vite preview",
     "serve": "vite preview",
     "type-check": "vue-tsc --noEmit",
-    "test": "vitest"
+    "test": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "playwright:install": "playwright install chromium"
   },
   "dependencies": {
+    "@types/d3": "^7.4.3",
     "axios": "^1.6.0",
+    "d3": "^7.9.0",
     "vue": "^3.4.0"
   },
   "devDependencies": {

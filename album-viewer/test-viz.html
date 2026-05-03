@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3 Visualization Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #plot {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Album Sales Visualization</h1>
+    <div id="plot"></div>
+    
+    <script type="module">
+        import { generatePlot } from './src/Utils/viz.ts';
+        
+        // Sample data
+        const sampleData = [
+            { month: 'Jan', year: 2024, sales: 120 },
+            { month: 'Feb', year: 2024, sales: 150 },
+            { month: 'Mar', year: 2024, sales: 180 },
+            { month: 'Apr', year: 2024, sales: 165 },
+            { month: 'May', year: 2024, sales: 200 },
+            { month: 'Jun', year: 2024, sales: 190 },
+            { month: 'Jul', year: 2024, sales: 220 },
+            { month: 'Aug', year: 2024, sales: 210 },
+        ];
+        
+        generatePlot(sampleData);
+    </script>
+</body>
+</html>

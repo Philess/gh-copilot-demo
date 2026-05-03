@@ -15,30 +15,37 @@
     <div class="album-info">
       <h3 class="album-title">{{ album.title }}</h3>
       <p class="album-artist">{{ album.artist }}</p>
+      <p class="album-year">{{ album.year }}</p>
       <div class="album-price">
         <span class="price">${{ album.price.toFixed(2) }}</span>
       </div>
     </div>
     
     <div class="album-actions">
-      <button class="btn btn-primary">Add to Cart</button>
+      <button class="btn btn-primary" @click="handleAddToCart">Add to Cart</button>
       <button class="btn btn-secondary">Preview</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useCart } from '../composables/useCart'
 import type { Album } from '../types/album'
 
 interface Props {
   album: Album
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+const { addToCart } = useCart()
 
 const handleImageError = (event: Event): void => {
   const target = event.target as HTMLImageElement
   target.src = 'https://via.placeholder.com/300x300/667eea/white?text=Album+Cover'
+}
+
+const handleAddToCart = (): void => {
+  addToCart(props.album)
 }
 </script>
 
@@ -125,7 +132,14 @@ const handleImageError = (event: Event): void => {
 .album-artist {
   color: #666;
   font-size: 1rem;
+  margin: 0 0 0.25rem 0;
+}
+
+.album-year {
+  color: #999;
+  font-size: 0.9rem;
   margin: 0 0 1rem 0;
+  font-style: italic;
 }
 
 .album-price {
