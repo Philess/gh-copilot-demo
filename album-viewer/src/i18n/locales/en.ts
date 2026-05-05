@@ -10,6 +10,14 @@ const en = {
     addToCart: 'Add to Cart',
     preview: 'Preview',
   },
+  cart: {
+    title: 'My Cart',
+    empty: 'Your cart is empty.',
+    remove: 'Remove',
+    total: 'Total',
+    itemCount: '{count} item(s)',
+    inCart: 'In Cart',
+  },
   languages: {
     en: 'English',
     fr: 'French',

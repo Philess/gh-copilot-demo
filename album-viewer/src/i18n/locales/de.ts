@@ -12,6 +12,14 @@ const de: Translations = {
     addToCart: 'In den Warenkorb',
     preview: 'Vorschau',
   },
+  cart: {
+    title: 'Mein Warenkorb',
+    empty: 'Dein Warenkorb ist leer.',
+    remove: 'Entfernen',
+    total: 'Gesamt',
+    itemCount: '{count} Artikel',
+    inCart: 'Im Warenkorb',
+  },
   languages: {
     en: 'Englisch',
     fr: 'Französisch',

@@ -21,7 +21,12 @@
     </div>
     
     <div class="album-actions">
-      <button class="btn btn-primary">{{ t.card.addToCart }}</button>
+      <button
+        class="btn btn-primary"
+        :class="{ 'btn-in-cart': inCart }"
+        :disabled="inCart"
+        @click="addToCart(album)"
+      >{{ inCart ? t.cart.inCart : t.card.addToCart }}</button>
       <button class="btn btn-secondary">{{ t.card.preview }}</button>
     </div>
   </div>
@@ -30,14 +35,19 @@
 <script setup lang="ts">
 import type { Album } from '../types/album'
 import { useI18n } from '../i18n'
+import { useCart } from '../composables/useCart'
 
 interface Props {
   album: Album
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 const { t } = useI18n()
+const { addToCart, isInCart } = useCart()
+
+import { computed } from 'vue'
+const inCart = computed(() => isInCart(props.album.id))
 
 const handleImageError = (event: Event): void => {
   const target = event.target as HTMLImageElement
@@ -168,6 +178,16 @@ const handleImageError = (event: Event): void => {
 .btn-primary:hover {
   background: #5a6fd8;
   transform: translateY(-2px);
+}
+
+.btn-in-cart {
+  background: #4caf50;
+  cursor: default;
+}
+
+.btn-in-cart:hover {
+  background: #4caf50;
+  transform: none;
 }
 
 .btn-secondary {

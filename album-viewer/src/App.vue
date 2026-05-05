@@ -6,15 +6,23 @@
           <h1>{{ t.header.title }}</h1>
           <p>{{ t.header.subtitle }}</p>
         </div>
-        <div class="lang-selector">
-          <select :value="currentLocale" @change="setLocale(($event.target as HTMLSelectElement).value as Locale)" aria-label="Select language">
-            <option value="en">{{ t.languages.en }}</option>
-            <option value="fr">{{ t.languages.fr }}</option>
-            <option value="de">{{ t.languages.de }}</option>
-          </select>
+        <div class="header-right">
+          <div class="lang-selector">
+            <select :value="currentLocale" @change="setLocale(($event.target as HTMLSelectElement).value as Locale)" aria-label="Select language">
+              <option value="en">{{ t.languages.en }}</option>
+              <option value="fr">{{ t.languages.fr }}</option>
+              <option value="de">{{ t.languages.de }}</option>
+            </select>
+          </div>
+          <button class="cart-btn" @click="showCart = !showCart" :aria-label="t.cart.title">
+            🛒
+            <span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
+          </button>
         </div>
       </div>
     </header>
+
+    <CartDrawer :isOpen="showCart" @close="showCart = false" />
 
     <main class="main">
       <div v-if="loading" class="loading">
@@ -42,11 +50,15 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import AlbumCard from './components/AlbumCard.vue'
+import CartDrawer from './components/CartDrawer.vue'
 import type { Album } from './types/album'
 import { useI18n } from './i18n'
 import type { Locale } from './i18n'
+import { useCart } from './composables/useCart'
 
 const { t, currentLocale, setLocale } = useI18n()
+const { cartCount } = useCart()
+const showCart = ref(false)
 
 const albums = ref<Album[]>([])
 const loading = ref<boolean>(true)
@@ -101,6 +113,47 @@ onMounted(() => {
 .header p {
   font-size: 1.2rem;
   opacity: 0.9;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cart-btn {
+  position: relative;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50px;
+  color: white;
+  font-size: 1.4rem;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.cart-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ff4757;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
 }
 
 .lang-selector select {
