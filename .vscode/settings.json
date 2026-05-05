@@ -1,5 +1,6 @@
 {
     "chat.tools.terminal.autoApprove": {
-        "env": true
+        "env": true,
+        "dotnet test": true
     }
 }

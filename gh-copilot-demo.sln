@@ -1,8 +1,10 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "albums-api", "albums-api\albums-api.csproj", "{AFD2CA5B-6C82-785B-718C-D4495EDCBEA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "albums-api.tests", "albums-api.tests\albums-api.tests.csproj", "{33752016-BC0A-49C1-AE72-E467F86446E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,6 +16,10 @@ Global
 		{AFD2CA5B-6C82-785B-718C-D4495EDCBEA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFD2CA5B-6C82-785B-718C-D4495EDCBEA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFD2CA5B-6C82-785B-718C-D4495EDCBEA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33752016-BC0A-49C1-AE72-E467F86446E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33752016-BC0A-49C1-AE72-E467F86446E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33752016-BC0A-49C1-AE72-E467F86446E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33752016-BC0A-49C1-AE72-E467F86446E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
