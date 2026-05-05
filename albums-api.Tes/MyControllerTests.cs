@@ -37,7 +37,7 @@ public class MyControllerTests
                     return expectedBytes.Length;
                 });
 
-            var controller = new MyController(_ => mockFileStream.Object);
+            var controller = new MyController(_ => mockFileStream.Object, Path.GetTempPath(), string.Empty);
 
             var result = controller.ReadFile("irrelevant.txt");
 
