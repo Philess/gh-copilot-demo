@@ -1,0 +1,42 @@
+# GitHub Action workflow that runs on push to main branch
+# Docker build and push the album-api image to ACR
+name: Build and Push Docker Image to ACR
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/album-api:latest .
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/album-api:latest
+          docker tag ${{ secrets.ACR_LOGIN_SERVER }}/album-api:latest ${{ secrets.DOCKERHUB_USERNAME }}/album-api:${{ github.run_id }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/album-api:${{ github.run_id }}
+          # run tests on the album-api image
+
+# deploy the album-api image to the dev AKS cluster
+      - name: Deploy to AKS
+        uses: azure/aks-set-context@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          cluster-name: ${{ secrets.AKS_CLUSTER_NAME }}
+          resource-group: ${{ secrets.AKS_RESOURCE_GROUP }}
+      - name: Update Kubernetes deployment
+        run: |
+          kubectl set image deployment/album-api album-api=${{ secrets.ACR_LOGIN_SERVER }}/album-api:latest -n dev
+          kubectl rollout status deployment/album-api -n dev  
+        

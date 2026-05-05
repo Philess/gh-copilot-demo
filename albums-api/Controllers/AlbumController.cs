@@ -25,8 +25,35 @@ namespace albums_api.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return Ok();
+            //here we will retrieve the album with the specified id from the database
+            var album = Album.GetById(id);
+            if (album == null)
+            {
+                return NotFound();
+            }
+            return Ok(album);
         }
 
+        // function that retrieves albums and sorts them by title, artist or price
+        [HttpGet("sort")]
+        public IActionResult Get(string sortBy)
+        {            
+            var albums = Album.GetAll();
+            switch (sortBy.ToLower())
+            {                
+                case "title":
+                    albums = albums.OrderBy(a => a.Title).ToList();
+                    break;
+                case "artist":
+                    albums = albums.OrderBy(a => a.Artist).ToList();
+                    break;
+                case "price":
+                    albums = albums.OrderBy(a => a.Price).ToList();
+                    break;
+                default:                
+                    return BadRequest("Invalid sortBy parameter. Valid values are: title, artist, price.");
+            }
+            return Ok(albums);
+        }
     }
 }
