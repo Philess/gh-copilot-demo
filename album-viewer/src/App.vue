@@ -1,19 +1,30 @@
 <template>
   <div class="app">
     <header class="header">
-      <h1>🎵 Album Collection</h1>
-      <p>Discover amazing music albums</p>
+      <div class="header-content">
+        <div class="header-text">
+          <h1>{{ t.header.title }}</h1>
+          <p>{{ t.header.subtitle }}</p>
+        </div>
+        <div class="language-selector">
+          <select v-model="currentLocale" @change="setLocale(currentLocale)" class="lang-select">
+            <option v-for="(label, code) in localeLabels" :key="code" :value="code">
+              {{ label }}
+            </option>
+          </select>
+        </div>
+      </div>
     </header>
 
     <main class="main">
       <div v-if="loading" class="loading">
         <div class="spinner"></div>
-        <p>Loading albums...</p>
+        <p>{{ t.loading }}</p>
       </div>
 
       <div v-else-if="error" class="error">
         <p>{{ error }}</p>
-        <button @click="fetchAlbums" class="retry-btn">Try Again</button>
+        <button @click="fetchAlbums" class="retry-btn">{{ t.retryButton }}</button>
       </div>
 
       <div v-else class="albums-grid">
@@ -32,6 +43,9 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import AlbumCard from './components/AlbumCard.vue'
 import type { Album } from './types/album'
+import { useI18n } from './composables/useI18n'
+
+const { t, currentLocale, setLocale, localeLabels } = useI18n()
 
 const albums = ref<Album[]>([])
 const loading = ref<boolean>(true)
@@ -44,7 +58,7 @@ const fetchAlbums = async (): Promise<void> => {
     const response = await axios.get<Album[]>('/albums')
     albums.value = response.data
   } catch (err) {
-    error.value = 'Failed to load albums. Please make sure the API is running.'
+    error.value = t.value.error
     console.error('Error fetching albums:', err)
   } finally {
     loading.value = false
@@ -63,9 +77,19 @@ onMounted(() => {
 }
 
 .header {
-  text-align: center;
   margin-bottom: 3rem;
   color: white;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.header-text {
+  text-align: center;
 }
 
 .header h1 {
@@ -77,6 +101,40 @@ onMounted(() => {
 .header p {
   font-size: 1.2rem;
   opacity: 0.9;
+}
+
+.language-selector {
+  position: absolute;
+  right: 0;
+}
+
+.lang-select {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+  appearance: none;
+  padding-right: 2rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+}
+
+.lang-select:hover,
+.lang-select:focus {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: white;
+  outline: none;
+}
+
+.lang-select option {
+  background: #667eea;
+  color: white;
 }
 
 .main {
@@ -149,6 +207,15 @@ onMounted(() => {
   
   .header h1 {
     font-size: 2rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .language-selector {
+    position: static;
   }
   
   .albums-grid {
