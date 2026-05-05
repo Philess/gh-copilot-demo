@@ -74,6 +74,16 @@
             }
         },
         "group": "build"
+    },
+    {
+        "label": "npm: build - album-api-v2",
+        "type": "shell",
+        "command": "npm",
+        "args": ["run", "build"],
+        "options": {
+            "cwd": "${workspaceFolder}/album-api-v2"
+        },
+        "problemMatcher": []
     }
   ]
 }

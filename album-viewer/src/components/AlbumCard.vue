@@ -14,27 +14,30 @@
     
     <div class="album-info">
       <h3 class="album-title">{{ album.title }}</h3>
-      <p class="album-artist">{{ album.artist }}</p>
+      <p class="album-artist">{{ album.artist.name }}</p>
       <div class="album-price">
         <span class="price">${{ album.price.toFixed(2) }}</span>
       </div>
     </div>
     
     <div class="album-actions">
-      <button class="btn btn-primary">Add to Cart</button>
-      <button class="btn btn-secondary">Preview</button>
+      <button class="btn btn-primary">{{ t.card.addToCart }}</button>
+      <button class="btn btn-secondary">{{ t.card.preview }}</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Album } from '../types/album'
+import { useI18n } from '../i18n'
 
 interface Props {
   album: Album
 }
 
 defineProps<Props>()
+
+const { t } = useI18n()
 
 const handleImageError = (event: Event): void => {
   const target = event.target as HTMLImageElement

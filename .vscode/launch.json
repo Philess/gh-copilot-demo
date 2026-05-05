@@ -7,6 +7,10 @@
     {
       "name": "All services",
       "configurations": ["C#: Album API Debug", "Node.js: Album Viewer Debug"]
+    },
+    {
+      "name": "Album API v2 + Viewer",
+      "configurations": ["Node.js: Album API v2 Debug", "Node.js: Album Viewer Debug"]
     }
   ],
   "configurations": [
@@ -28,6 +32,25 @@
       },
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/albums-api/Views"
+      }
+    },
+    {
+      "name": "Node.js: Album API v2 Debug",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start"],
+      "cwd": "${workspaceFolder}/album-api-v2",
+      "preLaunchTask": "npm: build - album-api-v2",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": "3000"
+      },
+      "console": "integratedTerminal",
+      "serverReadyAction": {
+        "pattern": "Album API v2 listening on port ([0-9]+)",
+        "uriFormat": "http://localhost:%s/albums",
+        "action": "openExternally"
       }
     },
     {

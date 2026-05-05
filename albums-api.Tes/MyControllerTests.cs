@@ -14,39 +14,30 @@ public class MyControllerTests
     public void ReadFile_WithMockedFileStream_ReturnsExpectedContent()
     {
         var expectedContent = "Testinhalt";
-        var expectedBytes = Encoding.UTF8.GetBytes(expectedContent);
-
-        var tempPath = Path.GetTempFileName();
+        var tempDirectory = Path.GetTempPath();
+        var tempPath = Path.Combine(tempDirectory, $"mocked-file-{Guid.NewGuid():N}.txt");
         try
         {
-            using var backingStream = new FileStream(tempPath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-            var mockFileStream = new Mock<FileStream>(backingStream.SafeFileHandle, FileAccess.ReadWrite);
+            File.WriteAllText(tempPath, expectedContent, Encoding.UTF8);
+            var mockFileStream = new Mock<FileStream>(tempPath, FileMode.Open, FileAccess.Read, FileShare.Read)
+            {
+                CallBase = true
+            };
 
-            var alreadyRead = false;
-            mockFileStream
-                .Setup(fs => fs.Read(It.IsAny<byte[]>(), 0, It.IsAny<int>()))
-                .Returns((byte[] buffer, int offset, int count) =>
-                {
-                    if (alreadyRead)
-                    {
-                        return 0;
-                    }
+            var fileName = Path.GetFileName(tempPath);
+            var controller = new MyController(_ => mockFileStream.Object, tempDirectory, string.Empty);
 
-                    alreadyRead = true;
-                    Array.Copy(expectedBytes, 0, buffer, offset, expectedBytes.Length);
-                    return expectedBytes.Length;
-                });
-
-            var controller = new MyController(_ => mockFileStream.Object, Path.GetTempPath(), string.Empty);
-
-            var result = controller.ReadFile("irrelevant.txt");
+            var result = controller.ReadFile(fileName);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.Contains(expectedContent));
+            Assert.AreEqual(expectedContent, result);
         }
         finally
         {
-            File.Delete(tempPath);
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
         }
     }
 

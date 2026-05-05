@@ -1,19 +1,30 @@
 <template>
   <div class="app">
     <header class="header">
-      <h1>🎵 Album Collection</h1>
-      <p>Discover amazing music albums</p>
+      <div class="header-content">
+        <div>
+          <h1>{{ t.header.title }}</h1>
+          <p>{{ t.header.subtitle }}</p>
+        </div>
+        <div class="lang-selector">
+          <select :value="currentLocale" @change="setLocale(($event.target as HTMLSelectElement).value as Locale)" aria-label="Select language">
+            <option value="en">{{ t.languages.en }}</option>
+            <option value="fr">{{ t.languages.fr }}</option>
+            <option value="de">{{ t.languages.de }}</option>
+          </select>
+        </div>
+      </div>
     </header>
 
     <main class="main">
       <div v-if="loading" class="loading">
         <div class="spinner"></div>
-        <p>Loading albums...</p>
+        <p>{{ t.loading }}</p>
       </div>
 
       <div v-else-if="error" class="error">
         <p>{{ error }}</p>
-        <button @click="fetchAlbums" class="retry-btn">Try Again</button>
+        <button @click="fetchAlbums" class="retry-btn">{{ t.retry }}</button>
       </div>
 
       <div v-else class="albums-grid">
@@ -32,6 +43,10 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import AlbumCard from './components/AlbumCard.vue'
 import type { Album } from './types/album'
+import { useI18n } from './i18n'
+import type { Locale } from './i18n'
+
+const { t, currentLocale, setLocale } = useI18n()
 
 const albums = ref<Album[]>([])
 const loading = ref<boolean>(true)
@@ -69,6 +84,14 @@ onMounted(() => {
   color: white;
 }
 
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
 .header h1 {
   font-size: 3rem;
   margin-bottom: 0.5rem;
@@ -78,6 +101,30 @@ onMounted(() => {
 .header p {
   font-size: 1.2rem;
   opacity: 0.9;
+}
+
+.lang-selector select {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: background 0.2s ease;
+}
+
+.lang-selector select:hover,
+.lang-selector select:focus {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.lang-selector select option {
+  background: #667eea;
+  color: white;
 }
 
 .main {
