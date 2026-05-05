@@ -1,0 +1,14 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - heading "🎵 Album Collection" [level=1] [ref=e7]
+        - paragraph [ref=e8]: Discover amazing music albums
+      - generic [ref=e9]:
+        - combobox "Select language" [ref=e11] [cursor=pointer]:
+          - option "English" [selected]
+          - option "French"
+          - option "German"
+        - button "My Cart" [ref=e12] [cursor=pointer]: 🛒
+  - main [ref=e13]:
+    - paragraph [ref=e16]: Loading albums...
