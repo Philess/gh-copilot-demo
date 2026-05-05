@@ -8,6 +8,16 @@ export default {
   retryButton: 'Try Again',
   albumCard: {
     addToCart: 'Add to Cart',
+    removeOne: 'Remove One',
+    inCart: 'In cart',
     preview: 'Preview',
+  },
+  cart: {
+    title: 'Cart',
+    button: 'Cart',
+    empty: 'Your cart is empty.',
+    items: 'Items',
+    total: 'Total',
+    clear: 'Clear Cart',
   },
 }

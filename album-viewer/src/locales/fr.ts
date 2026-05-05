@@ -8,6 +8,16 @@ export default {
   retryButton: 'Réessayer',
   albumCard: {
     addToCart: 'Ajouter au panier',
+    removeOne: 'Retirer un article',
+    inCart: 'Dans le panier',
     preview: 'Aperçu',
+  },
+  cart: {
+    title: 'Panier',
+    button: 'Panier',
+    empty: 'Votre panier est vide.',
+    items: 'Articles',
+    total: 'Total',
+    clear: 'Vider le panier',
   },
 }

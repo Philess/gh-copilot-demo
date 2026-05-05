@@ -21,9 +21,14 @@
     </div>
     
     <div class="album-actions">
-      <button class="btn btn-primary">{{ t.albumCard.addToCart }}</button>
+      <button class="btn btn-primary" @click="emit('add-to-cart')">{{ t.albumCard.addToCart }}</button>
+      <button class="btn btn-danger" @click="emit('remove-from-cart')" :disabled="quantity === 0">
+        {{ t.albumCard.removeOne }}
+      </button>
       <button class="btn btn-secondary">{{ t.albumCard.preview }}</button>
     </div>
+
+    <p class="cart-status">{{ t.albumCard.inCart }}: {{ quantity }}</p>
   </div>
 </template>
 
@@ -33,9 +38,15 @@ import { useI18n } from '../composables/useI18n'
 
 interface Props {
   album: Album
+  quantity: number
 }
 
 defineProps<Props>()
+
+const emit = defineEmits<{
+  (event: 'add-to-cart'): void
+  (event: 'remove-from-cart'): void
+}>()
 
 const { t } = useI18n()
 
@@ -176,10 +187,33 @@ const handleImageError = (event: Event): void => {
   border: 2px solid #667eea;
 }
 
+.btn-danger {
+  background: #e35d6a;
+  color: white;
+}
+
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-danger:not(:disabled):hover {
+  background: #ce4858;
+  transform: translateY(-2px);
+}
+
 .btn-secondary:hover {
   background: #667eea;
   color: white;
   transform: translateY(-2px);
+}
+
+.cart-status {
+  margin: 0;
+  padding: 0 1.5rem 1.25rem;
+  color: #334;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {
