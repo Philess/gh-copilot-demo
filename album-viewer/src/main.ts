@@ -1,3 +1,4 @@
+/** Main entry point for the Vue application */
 import { createApp } from 'vue'
 import App from './App.vue'
 

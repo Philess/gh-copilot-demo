@@ -8,6 +8,9 @@ using System.Text;
 
 namespace albums_api.Controllers
 {
+    /// <summary>
+    /// Controller for managing albums. Provides endpoints to retrieve all albums, retrieve a specific album by ID, and sort albums by title, artist, or price.
+    /// </summary>
     [Route("albums")]
     [ApiController]
     public class AlbumController : ControllerBase
