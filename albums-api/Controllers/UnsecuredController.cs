@@ -1,58 +1,105 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace UnsecureApp.Controllers
 {
-    public class MyController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class MyController : ControllerBase
     {
+        private readonly string connectionString;
+        private readonly string allowedDirectory = "/app/data"; // Example safe directory
 
-        public string ReadFile(string userInput)
+        public MyController()
         {
-            using (FileStream fs = File.Open(userInput, FileMode.Open))
-            {
-                byte[] b = new byte[1024];
-                UTF8Encoding temp = new UTF8Encoding(true);
+            // Ideally, use configuration or dependency injection for connection strings
+            connectionString = "YOUR_CONNECTION_STRING_HERE";
+        }
 
-                while (fs.Read(b, 0, b.Length) > 0)
+        // Secure file read: restricts to allowed directory and validates filename
+        [HttpGet("read-file")]
+        public ActionResult<string> ReadFile([FromQuery] string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName) || fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            {
+                return BadRequest("Invalid file name.");
+            }
+
+            var safePath = Path.Combine(allowedDirectory, fileName);
+            var fullPath = Path.GetFullPath(safePath);
+            if (!fullPath.StartsWith(allowedDirectory))
+            {
+                return BadRequest("Access denied.");
+            }
+
+            if (!System.IO.File.Exists(fullPath))
+            {
+                return NotFound("File not found.");
+            }
+
+            try
+            {
+                return System.IO.File.ReadAllText(fullPath, Encoding.UTF8);
+            }
+            catch (Exception)
+            {
+                // Log exception securely
+                return StatusCode(500, "Error reading file.");
+            }
+        }
+
+        // Secure SQL: uses parameterized query
+        [HttpGet("get-product")]
+        public ActionResult<int> GetProduct([FromQuery] string productName)
+        {
+            if (string.IsNullOrWhiteSpace(productName))
+            {
+                return BadRequest("Product name required.");
+            }
+
+            using (var connection = new SqlConnection(connectionString))
+            using (var sqlCommand = new SqlCommand("SELECT ProductId FROM Products WHERE ProductName = @productName", connection))
+            {
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Parameters.AddWithValue("@productName", productName);
+                connection.Open();
+                using (var reader = sqlCommand.ExecuteReader())
                 {
-                    return temp.GetString(b);
+                    if (reader.Read())
+                    {
+                        return reader.GetInt32(0);
+                    }
+                    else
+                    {
+                        return NotFound("Product not found.");
+                    }
                 }
             }
-
-            return null;
         }
 
-        public int GetProduct(string productName)
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                SqlCommand sqlCommand = new SqlCommand()
-                {
-                    CommandText = "SELECT ProductId FROM Products WHERE ProductName = '" + productName + "'",
-                    CommandType = CommandType.Text,
-                };
-
-                SqlDataReader reader = sqlCommand.ExecuteReader();
-                return reader.GetInt32(0); 
-            }
-        }
-
-        public void GetObject()
+        // Improved exception handling example
+        [HttpGet("get-object")]
+        public IActionResult GetObject()
         {
             try
             {
                 object o = null;
                 o.ToString();
+                return Ok();
             }
-            catch (Exception e)
+            catch (NullReferenceException)
             {
-                Console.WriteLine(e.ToString());
+                // Log securely
+                return StatusCode(500, "A null reference occurred.");
             }
-        
+            catch (Exception)
+            {
+                // Log securely
+                return StatusCode(500, "An error occurred.");
+            }
         }
-
-        private string connectionString = "";
     }
 }
