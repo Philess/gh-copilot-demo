@@ -1,9 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
 
-var DefaultHttpPort = Environment.GetEnvironmentVariable("DAPR_HTTP_PORT") ?? "3500";
-var AlbumStateStore = "statestore";
-var CollectionId = Environment.GetEnvironmentVariable("COLLECTION_ID") ?? "GreatestHits";
-
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -20,7 +16,6 @@ builder.Services.AddCors(options => {
         builder.AllowAnyMethod();
     });
 });
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,16 +25,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+
+app.UseRouting();
 
 app.UseCors();
 
-// app.Urls.Add("${ASPNETCORE_URLS}");
-
-app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
-app.UseRouting();
 
 app.MapGet("/", async context =>
 {

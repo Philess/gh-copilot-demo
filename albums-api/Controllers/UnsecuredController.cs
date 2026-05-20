@@ -1,58 +1,61 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
-namespace UnsecureApp.Controllers
+namespace albums_api.Controllers
 {
     public class MyController
     {
 
         public string ReadFile(string userInput)
         {
-            using (FileStream fs = File.Open(userInput, FileMode.Open))
+            if (string.IsNullOrWhiteSpace(userInput))
             {
-                byte[] b = new byte[1024];
-                UTF8Encoding temp = new UTF8Encoding(true);
-
-                while (fs.Read(b, 0, b.Length) > 0)
-                {
-                    return temp.GetString(b);
-                }
+                throw new ArgumentException("Path is required", nameof(userInput));
             }
 
-            return null;
+            string fullPath = Path.GetFullPath(userInput);
+            string basePath = Path.GetFullPath(".");
+            if (!fullPath.StartsWith(basePath, StringComparison.Ordinal))
+            {
+                throw new UnauthorizedAccessException("Access denied: path traversal attempt detected");
+            }
+
+            using FileStream fs = File.Open(fullPath, FileMode.Open);
+            using StreamReader reader = new StreamReader(fs, Encoding.UTF8);
+            return reader.ReadToEnd();
         }
 
         public int GetProduct(string productName)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            if (string.IsNullOrWhiteSpace(productName))
             {
-                SqlCommand sqlCommand = new SqlCommand()
-                {
-                    CommandText = "SELECT ProductId FROM Products WHERE ProductName = '" + productName + "'",
-                    CommandType = CommandType.Text,
-                };
-
-                SqlDataReader reader = sqlCommand.ExecuteReader();
-                return reader.GetInt32(0); 
+                throw new ArgumentException("Product name is required", nameof(productName));
             }
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException("Database connection string is not configured.");
+            }
+
+            using SqlConnection connection = new SqlConnection(connectionString);
+            using SqlCommand sqlCommand = new SqlCommand()
+            {
+                Connection = connection,
+                CommandText = "SELECT ProductId FROM Products WHERE ProductName = @ProductName",
+                CommandType = CommandType.Text,
+            };
+            sqlCommand.Parameters.AddWithValue("@ProductName", productName);
+
+            connection.Open();
+            using SqlDataReader reader = sqlCommand.ExecuteReader();
+            if (reader.Read())
+            {
+                return reader.GetInt32(0);
+            }
+            throw new InvalidOperationException("Product not found");
         }
 
-        public void GetObject()
-        {
-            try
-            {
-                object o = null;
-                o.ToString();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-        
-        }
-
-        private string connectionString = "";
+        private readonly string connectionString = "";
     }
 }
