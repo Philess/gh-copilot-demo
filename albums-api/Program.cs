@@ -12,6 +12,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 
+// Configure Cross-Origin Resource Sharing (CORS).
+// AllowAnyOrigin, AllowAnyHeader and AllowAnyMethod are enabled here to simplify
+// local development and enable the API to be called from frontends or Dapr sidecars
+// running on different hosts or ports (for example, when using containers).
+// In production you should restrict origins and allowed headers/methods to improve security.
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(builder =>
     {

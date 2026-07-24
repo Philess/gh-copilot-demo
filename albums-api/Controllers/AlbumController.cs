@@ -28,5 +28,22 @@ namespace albums_api.Controllers
             return Ok();
         }
 
+        // GET api/albums/sort?by=title|artist|price
+        [HttpGet("sort")]
+        public IActionResult GetSorted([FromQuery] string by = "title")
+        {
+            var albums = Album.GetAll();
+
+            var sortedAlbums = by.ToLower() switch
+            {
+                "artist" => albums.OrderBy(a => a.Artist).ToList(),
+                "price" => albums.OrderBy(a => a.Price).ToList(),
+                "title" or _ => albums.OrderBy(a => a.Title).ToList(),
+            };
+
+            return Ok(sortedAlbums);
+        }
+
     }
 }
+

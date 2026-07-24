@@ -1,7 +1,13 @@
 <template>
   <div class="app">
     <header class="header">
-      <h1>🎵 Album Collection</h1>
+      <div class="header-content">
+        <h1>🎵 Album Collection</h1>
+        <button class="cart-icon-btn" @click="toggleCart">
+          🛒
+          <span v-if="cart.items.length > 0" class="cart-badge">{{ cartItemCount }}</span>
+        </button>
+      </div>
       <p>Discover amazing music albums</p>
     </header>
 
@@ -20,22 +26,41 @@
         <AlbumCard 
           v-for="album in albums" 
           :key="album.id" 
-          :album="album" 
+          :album="album"
+          @add-to-cart="addToCart"
         />
       </div>
     </main>
+
+    <CartView 
+      v-if="showCart"
+      :cart="cart"
+      @close="closeCart"
+      @remove="removeFromCart"
+      @update-quantity="updateCartItemQuantity"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import AlbumCard from './components/AlbumCard.vue'
+import CartView from './components/CartView.vue'
 import type { Album } from './types/album'
+import type { Cart, CartItem } from './types/cart'
 
 const albums = ref<Album[]>([])
 const loading = ref<boolean>(true)
 const error = ref<string | null>(null)
+const showCart = ref<boolean>(false)
+const cart = ref<Cart>({
+  items: []
+})
+
+const cartItemCount = computed(() => {
+  return cart.value.items.reduce((sum, item) => sum + item.quantity, 0)
+})
 
 const fetchAlbums = async (): Promise<void> => {
   try {
@@ -49,6 +74,39 @@ const fetchAlbums = async (): Promise<void> => {
   } finally {
     loading.value = false
   }
+}
+
+const addToCart = (album: Album): void => {
+  const existingItem = cart.value.items.find(item => item.id === album.id)
+  
+  if (existingItem) {
+    existingItem.quantity += 1
+  } else {
+    const cartItem: CartItem = {
+      ...album,
+      quantity: 1
+    }
+    cart.value.items.push(cartItem)
+  }
+}
+
+const removeFromCart = (albumId: number): void => {
+  cart.value.items = cart.value.items.filter(item => item.id !== albumId)
+}
+
+const updateCartItemQuantity = (albumId: number, quantity: number): void => {
+  const item = cart.value.items.find(i => i.id === albumId)
+  if (item) {
+    item.quantity = quantity
+  }
+}
+
+const toggleCart = (): void => {
+  showCart.value = !showCart.value
+}
+
+const closeCart = (): void => {
+  showCart.value = false
 }
 
 onMounted(() => {
@@ -68,15 +126,61 @@ onMounted(() => {
   color: white;
 }
 
+.header-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
 .header h1 {
   font-size: 3rem;
-  margin-bottom: 0.5rem;
+  margin: 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.cart-icon-btn {
+  position: relative;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+  color: white;
+  font-size: 1.5rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ff4757;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .header p {
   font-size: 1.2rem;
   opacity: 0.9;
+  margin: 0;
 }
 
 .main {
@@ -145,6 +249,11 @@ onMounted(() => {
 @media (max-width: 768px) {
   .app {
     padding: 1rem;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
   }
   
   .header h1 {

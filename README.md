@@ -22,7 +22,7 @@ The [`album-api`](./album-api) is an .NET 8 minimal Web API that manage a list o
 
 ### Album Viewer (`album-viewer`)
 
-The [`album-viewer`](./album-viewer) is a modern Vue.js 3 application built with TypeScript through which the albums retrieved by the API are surfaced. The application uses the Vue 3 Composition API with full TypeScript support for enhanced developer experience and type safety. In order to display the repository of albums, the album viewer contacts the backend album API.
+The [`album-viewer`](./album-viewer) is a modern Vue.js 3 application built with TypeScript through which the albums retrieved by the API are surfaced. The application uses the Vue 3 Composition A[...]
 
 ## Getting Started
 
@@ -117,3 +117,100 @@ If you need to change these settings, you can modify:
 ### Alternative: GitHub Codespaces
 
 The easiest way is to open this solution in a GitHub Codespace, or run it locally in a devcontainer. The development environment will be automatically configured for you.
+
+---
+
+## Deploying to Azure
+
+This repository can be deployed to Azure. The steps below show a simple approach using Azure Container Registry (ACR) and Azure Container Apps to host both the API and the viewer. Adjust the resource names, locations, and image tags to suit your environment.
+
+Prerequisites:
+- Azure CLI installed and signed-in (`az login`)
+- Docker installed (or use `az acr build`)
+
+1) Create a resource group and an Azure Container Registry
+
+```bash
+az login
+az group create --name myResourceGroup --location westeurope
+az acr create --resource-group myResourceGroup --name myAcrName --sku Basic --admin-enabled true
+ACR_LOGIN_SERVER=$(az acr show -n myAcrName -g myResourceGroup --query loginServer -o tsv)
+```
+
+2) Build and push container images (example using Docker)
+
+```bash
+# Build and push albums-api
+docker build -t $ACR_LOGIN_SERVER/albums-api:1.0 ./albums-api
+docker push $ACR_LOGIN_SERVER/albums-api:1.0
+
+# Build and push album-viewer
+docker build -t $ACR_LOGIN_SERVER/album-viewer:1.0 ./album-viewer
+docker push $ACR_LOGIN_SERVER/album-viewer:1.0
+```
+
+Alternatively use ACR Tasks to build without a local Docker daemon:
+
+```bash
+az acr build --registry myAcrName --image albums-api:1.0 ./albums-api
+az acr build --registry myAcrName --image album-viewer:1.0 ./album-viewer
+```
+
+3) Create a Container Apps environment
+
+```bash
+az provider register --namespace Microsoft.Web
+az containerapp env create --name myEnv --resource-group myResourceGroup --location westeurope
+```
+
+4) Deploy the API to Container Apps
+
+```bash
+az containerapp create \
+  --name albums-api \
+  --resource-group myResourceGroup \
+  --environment myEnv \
+  --image $ACR_LOGIN_SERVER/albums-api:1.0 \
+  --ingress 'external' \
+  --target-port 3000
+```
+
+5) Deploy the Viewer to Container Apps and configure it to call the API
+
+First get the API URL (FQDN) from the previous step or via:
+
+```bash
+API_URL=$(az containerapp show --name albums-api --resource-group myResourceGroup --query properties.configuration.ingress.fqdn -o tsv)
+```
+
+Create the viewer container app and set an environment variable so the frontend can reach the API:
+
+```bash
+az containerapp create \
+  --name album-viewer \
+  --resource-group myResourceGroup \
+  --environment myEnv \
+  --image $ACR_LOGIN_SERVER/album-viewer:1.0 \
+  --ingress 'external' \
+  --target-port 3001 \
+  --env-vars VITE_ALBUM_API_HOST=https://$API_URL
+```
+
+6) Configure CORS and secrets
+
+- If you use the permissive CORS policy in development, update the API to restrict allowed origins before production deployment.
+- Use Container Apps secrets or Azure Key Vault to store any sensitive configuration and reference them in the container app.
+
+7) Verify
+
+- Open the viewer FQDN in your browser (use `az containerapp show` to get its FQDN) and confirm the frontend can call the API and display albums.
+
+Notes and alternatives:
+- You can host the Vue frontend in Azure Static Web Apps for a simpler, cheaper option; then use the API in Container Apps or App Service.
+- For production, consider configuring TLS, scaling rules, health probes, and a VNet integration if needed.
+
+---
+
+If you want, I can add:
+- A GitHub Actions workflow to build and push images to ACR and deploy to Container Apps, or
+- An example `az cli` script that parameterizes resource names and tags.
