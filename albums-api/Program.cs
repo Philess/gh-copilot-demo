@@ -48,7 +48,7 @@ app.MapGet("/", async context =>
 
 // 301 Permanent Redirect from /album (singular) to /albums (plural)
 // Handles common client typo to prevent false-positive failedrequest alerts
-app.MapGet("/album", () => Results.Redirect("/albums", permanent: true));
+// app.MapGet("/album", () => Results.Redirect("/albums", permanent: true));
 
 app.MapControllers();
 
