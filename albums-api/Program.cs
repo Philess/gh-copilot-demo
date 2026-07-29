@@ -33,6 +33,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
+// Serve static files from wwwroot (can host a favicon.ico to avoid browser 404s)
+app.UseStaticFiles();
+
 // app.Urls.Add("${ASPNETCORE_URLS}");
 
 app.UseHttpsRedirection();
@@ -41,14 +44,26 @@ app.UseAuthorization();
 
 app.UseRouting();
 
+// Health endpoint for platform health probes. Configure App Service or other platforms to use /health or /healthz
+app.MapGet("/health", () => Results.Ok(new { status = "Healthy" }));
+app.MapGet("/healthz", () => Results.Ok());
+
+// Minimal handler for favicon to avoid browser-triggered 404s. Returns 204 No Content.
+app.MapGet("/favicon.ico", (HttpContext ctx) =>
+{
+    ctx.Response.StatusCode = StatusCodes.Status204NoContent;
+    return Task.CompletedTask;
+});
+
+// Redirect common typos and singular/plural mismatch to canonical /albums endpoint so benign 404s don't trigger alerts.
+app.MapGet("/album", () => Results.Redirect("/albums", permanent: true));
+app.MapGet("/ablum", () => Results.Redirect("/albums", permanent: true));
+app.MapGet("/ablums", () => Results.Redirect("/albums", permanent: true));
+
 app.MapGet("/", async context =>
 {
     await context.Response.WriteAsync("Hit the /albums endpoint to retrieve a list of albums!");
 });
-
-// 301 Permanent Redirect from /album (singular) to /albums (plural)
-// Handles common client typo to prevent false-positive failedrequest alerts
-// app.MapGet("/album", () => Results.Redirect("/albums", permanent: true));
 
 app.MapControllers();
 
