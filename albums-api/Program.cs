@@ -33,30 +33,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
-// Serve static files from wwwroot (can host a favicon.ico to avoid browser 404s)
-app.UseStaticFiles();
-
-// app.Urls.Add("${ASPNETCORE_URLS}");
-
-
 app.UseHttpsRedirection();
-app.UseRouting();
-
 app.UseAuthorization();
-
-
-
-// Health endpoint for platform health probes. Configure App Service or other platforms to use /health or /healthz
-app.MapGet("/health", () => Results.Ok(new { status = "Healthy" }));
-app.MapGet("/healthz", () => Results.Ok());
-
-// Minimal handler for favicon to avoid browser-triggered 404s. Returns 204 No Content.
-app.MapGet("/favicon.ico", (HttpContext ctx) =>
-{
-    ctx.Response.StatusCode = StatusCodes.Status204NoContent;
-    return Task.CompletedTask;
-});
-
+app.UseRouting();
 
 
 app.MapGet("/", async context =>
