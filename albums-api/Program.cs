@@ -38,8 +38,9 @@ app.UseStaticFiles();
 
 // app.Urls.Add("${ASPNETCORE_URLS}");
 
-app.UseRouting();
+
 app.UseHttpsRedirection();
+app.UseRouting();
 
 app.UseAuthorization();
 
