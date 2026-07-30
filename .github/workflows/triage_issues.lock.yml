@@ -26,8 +26,8 @@
 
 name: "Triage_issues"
 "on":
-  schedule:
-  - cron: "32 16 * * *"
+  # schedule:
+  # - cron: "32 16 * * *"
     # Friendly format: daily (scattered)
   workflow_dispatch:
 

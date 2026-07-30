@@ -1,5 +1,6 @@
 ﻿using albums_api.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Text;
@@ -10,7 +11,7 @@ namespace albums_api.Controllers
 {
     [Route("albums")]
     [ApiController]
-    public class AlbumController : ControllerBase
+    public class AlbumController: ControllerBase
     {
         // GET: api/album
         [HttpGet]
@@ -25,7 +26,13 @@ namespace albums_api.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return Ok();
+            var album = Album.GetAll().FirstOrDefault(a => a.Id == id);
+            if (album == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(album);
         }
 
     }

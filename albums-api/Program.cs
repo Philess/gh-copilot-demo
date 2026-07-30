@@ -33,17 +33,31 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
-// app.Urls.Add("${ASPNETCORE_URLS}");
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.UseRouting();
+
 
 app.MapGet("/", async context =>
 {
     await context.Response.WriteAsync("Hit the /albums endpoint to retrieve a list of albums!");
+});
+
+// Redirect exact /album -> /albums
+app.MapGet("/album", context =>
+{
+    context.Response.Redirect("/albums", permanent: true); // 301
+    return Task.CompletedTask;
+});
+
+// Redirect /album/... -> /albums/...
+app.MapGet("/album/{*rest}", context =>
+{
+    var rest = context.Request.RouteValues["rest"]?.ToString() ?? string.Empty;
+    var suffix = string.IsNullOrEmpty(rest) ? "" : "/" + rest;
+    var target = $"/albums{suffix}{context.Request.QueryString}";
+    context.Response.Redirect(target, permanent: true);
+    return Task.CompletedTask;
 });
 
 app.MapControllers();

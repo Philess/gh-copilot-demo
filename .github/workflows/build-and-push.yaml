@@ -1,13 +1,13 @@
 name: Build and Deploy
 on:
-  push:
-    branches: [main]
-    # Publish semver tags as releases.
-    tags: ["v*.*.*"]
-    paths-ignore:
-      - "README.md"
-      - ".vscode/**"
-      - "assets/**"
+  # push:
+    # branches: [main]
+    # # Publish semver tags as releases.
+    # tags: ["v*.*.*"]
+    # paths-ignore:
+    #   - "README.md"
+    #   - ".vscode/**"
+    #   - "assets/**"
   workflow_dispatch:
 
 env:
