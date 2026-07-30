@@ -55,10 +55,7 @@ app.MapGet("/favicon.ico", (HttpContext ctx) =>
     return Task.CompletedTask;
 });
 
-// Redirect common typos and singular/plural mismatch to canonical /albums endpoint so benign 404s don't trigger alerts.
-app.MapGet("/album", () => Results.Redirect("/albums", permanent: true));
-app.MapGet("/ablum", () => Results.Redirect("/albums", permanent: true));
-app.MapGet("/ablums", () => Results.Redirect("/albums", permanent: true));
+
 
 app.MapGet("/", async context =>
 {
