@@ -38,11 +38,12 @@ app.UseStaticFiles();
 
 // app.Urls.Add("${ASPNETCORE_URLS}");
 
+app.UseRouting();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.UseRouting();
+
 
 // Health endpoint for platform health probes. Configure App Service or other platforms to use /health or /healthz
 app.MapGet("/health", () => Results.Ok(new { status = "Healthy" }));
