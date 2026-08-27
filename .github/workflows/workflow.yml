@@ -1,0 +1,11 @@
+# GitHub Action workflow that runs on push to main branch
+# Docker build and push the album-api image to ACR
+name: Build and Push Docker Image
+
+
+# tag the image with the GitHub run id and push to docker hub
+
+# run tests on the album-api image
+
+# deploy the album-api image to the dev AKS cluster
+

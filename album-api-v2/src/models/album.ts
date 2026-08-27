@@ -12,3 +12,5 @@ export interface Album {
   price: number
   image_url: string
 }
+
+export type AlbumInput = Omit<Album, 'id'>

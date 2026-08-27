@@ -1,58 +1,76 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
 namespace UnsecureApp.Controllers
 {
-    public class MyController
+    [Authorize]
+    [ApiController]
+    [Route("api/secure")]
+    public class MyController : ControllerBase
     {
+        private readonly string? connectionString;
+        private readonly string allowedFileDirectory;
 
-        public string ReadFile(string userInput)
+        public MyController(IConfiguration configuration, IWebHostEnvironment environment)
         {
-            using (FileStream fs = File.Open(userInput, FileMode.Open))
-            {
-                byte[] b = new byte[1024];
-                UTF8Encoding temp = new UTF8Encoding(true);
+            connectionString = configuration.GetConnectionString("DefaultConnection");
 
-                while (fs.Read(b, 0, b.Length) > 0)
-                {
-                    return temp.GetString(b);
-                }
-            }
-
-            return null;
+            string configuredDirectory = configuration["AllowedFileDirectory"]
+                ?? Path.Combine(environment.ContentRootPath, "Data");
+            allowedFileDirectory = Path.GetFullPath(configuredDirectory);
         }
 
-        public int GetProduct(string productName)
+        [HttpGet("files/{fileName}")]
+        public ActionResult<string> ReadFile(string fileName)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            if (string.IsNullOrWhiteSpace(fileName))
             {
-                SqlCommand sqlCommand = new SqlCommand()
-                {
-                    CommandText = "SELECT ProductId FROM Products WHERE ProductName = '" + productName + "'",
-                    CommandType = CommandType.Text,
-                };
-
-                SqlDataReader reader = sqlCommand.ExecuteReader();
-                return reader.GetInt32(0); 
+                return BadRequest("A file name is required.");
             }
+
+            string requestedPath = Path.GetFullPath(Path.Combine(allowedFileDirectory, fileName));
+            string directoryPrefix = allowedFileDirectory.TrimEnd(Path.DirectorySeparatorChar)
+                + Path.DirectorySeparatorChar;
+
+            if (!requestedPath.StartsWith(directoryPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest("The requested file path is invalid.");
+            }
+
+            if (!System.IO.File.Exists(requestedPath))
+            {
+                return NotFound();
+            }
+
+            return Ok(System.IO.File.ReadAllText(requestedPath, new UTF8Encoding(true)));
         }
 
-        public void GetObject()
+        [HttpGet("products/{productName}")]
+        public ActionResult<int> GetProduct(string productName)
         {
-            try
+            if (string.IsNullOrWhiteSpace(productName))
             {
-                object o = null;
-                o.ToString();
+                return BadRequest("A product name is required.");
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-        
-        }
 
-        private string connectionString = "";
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                return Problem("The product data source is unavailable.", statusCode: StatusCodes.Status503ServiceUnavailable);
+            }
+
+            using SqlConnection connection = new(connectionString);
+            using SqlCommand sqlCommand = new(
+                "SELECT ProductId FROM Products WHERE ProductName = @productName",
+                connection);
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.Parameters.Add("@productName", SqlDbType.NVarChar, 200).Value = productName;
+
+            connection.Open();
+            object? productId = sqlCommand.ExecuteScalar();
+            return productId is null or DBNull ? NotFound() : Ok(Convert.ToInt32(productId));
+        }
     }
 }

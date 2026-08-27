@@ -1,8 +1,13 @@
 <template>
   <div class="app">
     <header class="header">
-      <h1>🎵 Album Collection</h1>
-      <p>Discover amazing music albums</p>
+      <div>
+        <h1>🎵 Album Collection</h1>
+        <p>Discover amazing music albums</p>
+      </div>
+      <button class="cart-button" aria-label="Open cart" @click="isCartOpen = true">
+        🛒 <span class="cart-count">{{ count }}</span>
+      </button>
     </header>
 
     <main class="main">
@@ -21,9 +26,18 @@
           v-for="album in albums" 
           :key="album.id" 
           :album="album" 
+          :is-in-cart="has(album.id)"
+          @add-to-cart="add"
         />
       </div>
     </main>
+
+    <CartPanel
+      v-if="isCartOpen"
+      :items="items"
+      @close="isCartOpen = false"
+      @remove="remove"
+    />
   </div>
 </template>
 
@@ -31,12 +45,17 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import AlbumCard from './components/AlbumCard.vue'
+import CartPanel from './components/CartPanel.vue'
+import { useCart } from './composables/useCart'
 import type { Album } from './types/album'
 
 const albums = ref<Album[]>([])
 const loading = ref<boolean>(true)
 const error = ref<string | null>(null)
+const isCartOpen = ref(false)
+const { items, count, has, add, remove } = useCart()
 
+// Fetch albums from the API
 const fetchAlbums = async (): Promise<void> => {
   try {
     loading.value = true
@@ -63,9 +82,48 @@ onMounted(() => {
 }
 
 .header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 3rem;
   color: white;
+}
+
+.header > div {
+  text-align: center;
+  flex: 1;
+}
+
+.cart-button {
+  position: relative;
+  flex: 0 0 auto;
+  border: 2px solid white;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  cursor: pointer;
+  font-size: 1.35rem;
+  padding: 0.65rem 0.8rem;
+}
+
+.cart-count {
+  display: inline-flex;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f59e0b;
+  color: #1f2937;
+  font-size: 0.8rem;
+  font-weight: bold;
+  vertical-align: top;
+}
+
+.cart-button:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 3px;
 }
 
 .header h1 {
@@ -149,6 +207,14 @@ onMounted(() => {
   
   .header h1 {
     font-size: 2rem;
+  }
+
+  .header {
+    align-items: flex-start;
+  }
+
+  .header p {
+    display: none;
   }
   
   .albums-grid {

@@ -6,11 +6,8 @@ param logAnalyticsWorkspaceName string = 'log-${uniqueSuffix}'
 param appInsightsName string = 'appinsights-${uniqueSuffix}'
 param storageAccountName string = 'storage${replace(uniqueSuffix, '-', '')}'
 param blobContainerName string = 'albums'
-param registryName string
-@secure()
-param registryPassword string
-
-param registryUsername string
+param registryName string = 'acr${replace(uniqueSuffix, '-', '')}'
+param openAIAccountName string = 'openai-${uniqueSuffix}'
 param apiImage string
 param viewerImage string
 
@@ -60,6 +57,47 @@ resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/container
   name: blobContainerName
 }
 
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
+  name: registryName
+  location: location
+  sku: {
+    name: 'Basic'
+  }
+  properties: {
+    adminUserEnabled: false
+    publicNetworkAccess: 'Enabled'
+  }
+}
+
+resource containerAppIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'id-containerapps-${uniqueSuffix}'
+  location: location
+}
+
+resource registryPullRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(containerRegistry.id, containerAppIdentity.id, 'AcrPull')
+  scope: containerRegistry
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+    principalId: containerAppIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource openAIAccount 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
+  name: openAIAccountName
+  location: location
+  kind: 'OpenAI'
+  sku: {
+    name: 'S0'
+  }
+  properties: {
+    customSubDomainName: openAIAccountName
+    disableLocalAuth: true
+    publicNetworkAccess: 'Enabled'
+  }
+}
+
 // Container Apps environment 
 resource containerAppsEnv 'Microsoft.App/managedEnvironments@2022-03-01' = {
   name: containerAppsEnvName
@@ -94,16 +132,16 @@ module albumViewerCapp 'modules/container-app.bicep' = {
   dependsOn: [
     containerAppsEnv
     albumServiceCapp
+    registryPullRole
   ]
   params: {
     location: location
     containerAppsEnvName: containerAppsEnvName
     appName: 'album-viewer'
-    registryPassword: registryPassword
-    registryUsername: registryUsername
     containerImage: viewerImage
     httpPort: 3000
-    registryServer: registryName
+    registryServer: containerRegistry.properties.loginServer
+    registryIdentityId: containerAppIdentity.id
   }
 }
 
@@ -111,16 +149,16 @@ module albumServiceCapp 'modules/container-app.bicep' = {
   name: '${deployment().name}--album-api'
   dependsOn: [
     containerAppsEnv
+    registryPullRole
   ]
   params: {
     location: location
     containerAppsEnvName: containerAppsEnvName
     appName: 'album-api'
-    registryPassword: registryPassword
-    registryUsername: registryUsername
     containerImage: apiImage
     httpPort: 80
-    registryServer: registryName
+    registryServer: containerRegistry.properties.loginServer
+    registryIdentityId: containerAppIdentity.id
   }
 }
 
@@ -128,4 +166,7 @@ output env array=[
   'Environment name: ${containerAppsEnv.name}'
   'Storage account name: ${storageAccount.name}'
   'Storage container name: ${blobContainer.name}'
+  'Container registry server: ${containerRegistry.properties.loginServer}'
+  'Azure OpenAI endpoint: ${openAIAccount.properties.endpoint}'
 ]
+
