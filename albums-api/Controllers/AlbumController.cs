@@ -10,6 +10,9 @@ namespace albums_api.Controllers
 {
     [Route("albums")]
     [ApiController]
+    /// <summary>
+    /// Controller for managing albums.
+    /// </summary>
     public class AlbumController : ControllerBase
     {
         // GET: api/album
@@ -25,7 +28,14 @@ namespace albums_api.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            //here
+            var album = Album.GetById(id);
+
+            if (album is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(album);
         }
 
         // function that retrieves albums and sorts them by title, artist or price
@@ -40,7 +50,7 @@ namespace albums_api.Controllers
                     albums = albums.OrderBy(a => a.Title).ToList();
                     break;
                 case "artist":
-                    albums = albums.OrderBy(a => a.Artist).ToList();
+                    albums = albums.OrderBy(a => a.Artist.Name).ToList();
                     break;
                 case "price":
                     albums = albums.OrderBy(a => a.Price).ToList();
@@ -50,7 +60,63 @@ namespace albums_api.Controllers
             }
 
             return Ok(albums);
-        }               
+        }
+
+        // function that retrieves albums released in a given year
+        [HttpGet("search")]
+        public IActionResult Search(int year)
+        {
+            var albums = Album.GetByYear(year);
+
+            return Ok(albums);
+        }
+
+        // POST api/<AlbumController>
+        [HttpPost]
+        public IActionResult Create([FromBody] Album album)
+        {
+            if (album is null)
+            {
+                return BadRequest("Album data is required.");
+            }
+
+            var createdAlbum = Album.Create(album);
+
+            return CreatedAtAction(nameof(Get), new { id = createdAlbum.Id }, createdAlbum);
+        }
+
+        // PUT api/<AlbumController>/5
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, [FromBody] Album album)
+        {
+            if (album is null)
+            {
+                return BadRequest("Album data is required.");
+            }
+
+            var updatedAlbum = Album.Update(id, album);
+
+            if (updatedAlbum is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(updatedAlbum);
+        }
+
+        // DELETE api/<AlbumController>/5
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var deleted = Album.Delete(id);
+
+            if (!deleted)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
 
     }
 }

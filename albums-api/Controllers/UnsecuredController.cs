@@ -12,27 +12,15 @@ namespace UnsecureApp.Controllers
         {
             using (FileStream fs = File.Open(userInput, FileMode.Open))
             {
-                byte[] b = new byte[1024];
-                UTF8Encoding temp = new UTF8Encoding(true);
-
-                while (fs.Read(b, 0, b.Length) > 0)
-                {
-                    return temp.GetString(b);
-                }
+                return ReadFirstBuffer(fs);
             }
-
-            return null;
         }
 
         public int GetProduct(string productName)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand sqlCommand = new SqlCommand()
-                {
-                    CommandText = "SELECT ProductId FROM Products WHERE ProductName = '" + productName + "'",
-                    CommandType = CommandType.Text,
-                };
+                SqlCommand sqlCommand = CreateProductCommand(productName);
 
                 SqlDataReader reader = sqlCommand.ExecuteReader();
                 return reader.GetInt32(0); 
@@ -48,9 +36,36 @@ namespace UnsecureApp.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                LogException(e);
             }
         
+        }
+
+        private static string ReadFirstBuffer(FileStream fileStream)
+        {
+            byte[] buffer = new byte[1024];
+            UTF8Encoding encoding = new UTF8Encoding(true);
+
+            while (fileStream.Read(buffer, 0, buffer.Length) > 0)
+            {
+                return encoding.GetString(buffer);
+            }
+
+            return null;
+        }
+
+        private static SqlCommand CreateProductCommand(string productName)
+        {
+            return new SqlCommand()
+            {
+                CommandText = "SELECT ProductId FROM Products WHERE ProductName = '" + productName + "'",
+                CommandType = CommandType.Text,
+            };
+        }
+
+        private static void LogException(Exception exception)
+        {
+            Console.WriteLine(exception.ToString());
         }
 
         private string connectionString = "";
