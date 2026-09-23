@@ -129,3 +129,29 @@ output env array=[
   'Storage account name: ${storageAccount.name}'
   'Storage container name: ${blobContainer.name}'
 ]
+
+
+// Container Registry
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-06-01-preview' = {
+  name: containerRegistryName
+  location: location
+  sku: {
+    name: 'Standard'
+  }
+  properties: {
+    adminUserEnabled: true
+  }
+}
+
+// Azure Open AI resource
+resource azureOpenAI 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
+  name: azureOpenAIName
+  location: location
+  sku: {
+    name: 'S0'
+  }
+  kind: 'OpenAI'
+  properties: {
+    publicNetworkAccess: 'Enabled'
+  }
+}

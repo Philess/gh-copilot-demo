@@ -1,1 +1,8 @@
-
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd album-viewer && npm test -- --run$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
