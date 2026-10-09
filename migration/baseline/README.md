@@ -89,6 +89,7 @@ baseline:
 | Java/Javac | OpenJDK 17.0.20.1; `javac 17.0.1` | JDK 25 is required but unavailable here; no Java 25 build/runtime validation was possible. Pin/select JDK 25 in the scaffold and CI. |
 | Maven | 3.9.16 installed | No Maven Wrapper exists in the original repository. Add and commit `mvnw`, `mvnw.cmd`, and wrapper configuration with the scaffold; wrapper supports Linux and Windows. |
 | Node/npm | Node v24.21.0; npm 11.19.0 | Node 24.21.0 satisfies the official Angular 22 Node range. |
+| Python | 3.12.3 | Standard-library-only API capture/assertion harness; no Python packages required. |
 | Docker | CLI/server 28.0.4; daemon reachable on Ubuntu 24.04.5 | Container/Testcontainers execution is available, but no migration containers were built in this baseline. |
 | Dapr | Executable not found | Local sidecar/service-invocation validation remains unexecuted. |
 | Azure CLI | 2.90.0; an account context is configured | Subscription, selected tenant/resource group, permissions, region, budget, and deployment approvals remain unverified inputs; no Azure request was made. |

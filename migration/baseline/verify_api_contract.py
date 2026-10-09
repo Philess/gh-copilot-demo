@@ -26,8 +26,14 @@ def verify(capture, baseline):
     )
     for album in actual_list["body"]:
         assert set(album) == ALBUM_FIELDS, f"unexpected JSON fields for album {album.get('id')}"
+        assert type(album["id"]) is int, f"id for album {album['id']} must be an integer"
+        assert isinstance(album["title"], str), f"title for album {album['id']} must be a string"
+        assert isinstance(album["artist"], str), f"artist for album {album['id']} must be a string"
         assert isinstance(album["price"], (int, float)) and not isinstance(album["price"], bool), (
             f"price for album {album['id']} must be a JSON number"
+        )
+        assert isinstance(album["image_url"], str), (
+            f"image_url for album {album['id']} must be a string"
         )
 
     assert capture["numeric_detail"] == baseline["numeric_detail"], (
