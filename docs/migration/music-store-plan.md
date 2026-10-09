@@ -9,8 +9,10 @@ side by side with the original app on Azure Container Apps, retaining Dapr
 sidecars and service invocation. Validate the replacement before switching the
 published application link; keep the old URL available for rollback.
 
-This is a plan only. No repository implementation, deployment, or existing
-worktree cleanup is authorized by this artifact.
+The user has subsequently requested one GitHub issue per step, delegation to the
+Copilot coding agent, and isolated feature-branch/stacked-PR execution. Issue and
+branch orchestration is authorized. Actual cloud deployment and published-link
+cutover remain gated; unrelated worktree cleanup remains out of scope.
 
 ## Confirmed scope and decisions
 
@@ -263,3 +265,32 @@ Browser
   https://docs.spring.io/spring-boot/system-requirements.html
 - Angular version compatibility:
   https://angular.dev/reference/versions
+
+## GitHub orchestration progress
+
+- Created remote integration branch `feat/music-store-migration` from `main`.
+- Published this plan as `docs/migration/music-store-plan.md` on that branch.
+- Created draft integration PR #90 targeting `main`; it currently contains only
+  the plan document. No application changes or deployment have been completed.
+- Local branch and dirty/untracked repository files have been left unchanged.
+- Published one issue per step: #91 baseline, #92 scaffolding, #93 data, #94 API,
+  #95 frontend, #96 infrastructure, #97 delivery, #98 validation, #99
+  documentation, and #100 human-gated cutover readiness.
+- Filled all issue dependency/tracking links and created all eleven native
+  GitHub blocked-by relationships.
+- Assigned ready baseline issue #91 to Copilot with
+  `base_branch=feat/music-store-migration`. Verified draft coding PR #101 targets
+  that branch. Current stack: #101 -> #90 -> main.
+- Issues #92-#100 are queued, not yet assigned: their prerequisite artifacts are
+  not available. The API does not provide dependency-aware assignment queuing.
+- Prepared and verified a single-pass dry-run/execute delegation helper and
+  portable issue registry for advancing the stack only when valid bases exist.
+  Syntax checks, twenty offline mock cases, and live read-only preview passed;
+  the live preview skips the existing Copilot assignment and blocks downstream
+  steps on the current draft baseline PR.
+- The helper is not a background queue: further delegation requires a new
+  coordination pass after prerequisite PRs become ready. It never merges,
+  deploys, exports credentials, or performs live cutover.
+- No main merge, cloud deployment, live cutover, or legacy cleanup has occurred.
+- Original implementation todos remain pending until their actual acceptance
+  criteria are verified; creating/assigning an issue is not implementation.

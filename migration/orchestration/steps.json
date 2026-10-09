@@ -1,0 +1,17 @@
+{
+  "repository": "Philess/gh-copilot-demo",
+  "integration_branch": "feat/music-store-migration",
+  "integration_pr": 90,
+  "steps": [
+    { "step_id": "migration-baseline", "issue_number": 91, "dependencies": [] },
+    { "step_id": "migration-scaffold", "issue_number": 92, "dependencies": ["migration-baseline"] },
+    { "step_id": "migration-data", "issue_number": 93, "dependencies": ["migration-scaffold"] },
+    { "step_id": "migration-api", "issue_number": 94, "dependencies": ["migration-data"] },
+    { "step_id": "migration-frontend", "issue_number": 95, "dependencies": ["migration-scaffold"] },
+    { "step_id": "migration-infrastructure", "issue_number": 96, "dependencies": ["migration-baseline"] },
+    { "step_id": "migration-delivery", "issue_number": 97, "dependencies": ["migration-api", "migration-frontend", "migration-infrastructure"] },
+    { "step_id": "migration-validation", "issue_number": 98, "dependencies": ["migration-delivery"] },
+    { "step_id": "migration-documentation", "issue_number": 99, "dependencies": ["migration-validation"] },
+    { "step_id": "migration-cutover", "issue_number": 100, "stage": "cutover", "dependencies": ["migration-documentation"] }
+  ]
+}
