@@ -68,6 +68,9 @@ All commands below were run without editing original project source or lockfiles
 | `dotnet build albums-api/albums-api.csproj` | Passed; targets `net8.0` with SDK 10.0.401. Four existing compiler warnings: unused `AlbumStateStore` and nullable warnings in `Controllers/UnsecuredController.cs`; no errors. |
 | `ASPNETCORE_ENVIRONMENT=Development dotnet run --no-build --no-launch-profile --project albums-api/albums-api.csproj --urls http://127.0.0.1:3000` | Started successfully; the API responses above were captured using `curl`. |
 | `cd album-viewer && npm ci && npm run type-check && npm run build` | Passed using Node v24.21.0/npm 11.19.0. Build emitted the existing Vite CJS Node API deprecation warning. `npm ci` reported 15 audit findings (3 moderate, 9 high, 3 critical); no dependency or lockfile changes were made. |
+| `python3 migration/baseline/verify_api_contract.py` | Passed against the committed fixture (Python 3.12.3). |
+| `python3 migration/baseline/capture_api.py --output /tmp/catalog-capture.json && python3 migration/baseline/verify_api_contract.py --capture /tmp/catalog-capture.json` | Passed against the running original API; captured responses matched the committed baseline. |
+| Negative harness check with the first record's `id` changed from `1` to JSON `true` | Rejected as expected; booleans are not accepted as integer IDs. |
 | Browser UI interaction | Not run: the browser MCP session failed with an OAuth-required error. UI expectations are explicitly source-derived in `ui-acceptance.md`. |
 | Azure deployment/database/Dapr checks | Not run; this baseline does not provision cloud resources, and Dapr is not installed. |
 
@@ -107,8 +110,9 @@ the BOM's older point release.
 | Java | JDK 25 | Required by the migration plan. Spring Boot 4.1.1's official system requirements state Java 17 through Java 27. The local JDK is only 17, so the JDK 25 vendor/patch must be selected and verified in scaffold CI. |
 | Spring Boot | 4.1.1 | Current stable release at capture; official system requirements cover Java 25 and Maven 3.6.3+. |
 | Maven Wrapper | Apache Maven 3.10.0 | Current stable Maven release at capture; use the official Wrapper on both `mvnw` (POSIX/Linux) and `mvnw.cmd` (Windows). |
-| PostgreSQL JDBC | `org.postgresql:postgresql:42.7.14` | pgJDBC 42.7.14 is an official release and supports Java 8+; it includes the October 2026 security fixes. Spring Boot 4.1.1's BOM manages 42.7.13, so explicitly align to 42.7.14. |
-| Flyway | `org.flywaydb:flyway-core:12.4.0` and `org.flywaydb:flyway-database-postgresql:12.4.0` | Use the Spring Boot 4.1.1 BOM-managed Flyway version and matching PostgreSQL database module; verify a real PostgreSQL migration in issue #93 rather than treating this baseline as a database test. |
+| PostgreSQL JDBC | `org.postgresql:postgresql:42.7.14` | pgJDBC 42.7.14 is an official release and documents Java 8+; its CI matrix includes Java 25. It includes the October 2026 security fixes. Spring Boot 4.1.1's BOM manages 42.7.13, so explicitly align to 42.7.14. |
+| Flyway | `org.flywaydb:flyway-core:12.4.0` and `org.flywaydb:flyway-database-postgresql:12.4.0` | Use the Spring Boot 4.1.1 BOM-managed Flyway version and matching PostgreSQL database module. Flyway documents Java 17+; no explicit Java 25 qualification was found, so verify it on JDK 25 in scaffold CI and exercise PostgreSQL migrations in issue #93. |
+| Testcontainers | 2.0.5 (Spring Boot BOM-managed) | Docker daemon is reachable and Testcontainers documents Java 17+; no explicit Java 25 qualification was found. Validate its PostgreSQL module with JDK 25 and Linux Docker in scaffold CI. |
 | Java container | `eclipse-temurin:25-jre-noble` (resolve/pin image digest in scaffold) | Linux Ubuntu Noble JRE 25 candidate; actual OCI tag/digest and build/run compatibility still require scaffold CI validation. |
 | Angular / CLI / Material | 22.2.2 / 22.2.2 / 22.2.2 | Angular and Angular Material/CLI official release tags align at 22.2.2. |
 | Node.js | 24.21.0 | Angular's official active-support matrix for 22.0.x accepts `^24.15.0`; 24.21.0 is within that range and is present in this container. |
@@ -117,8 +121,9 @@ the BOM's older point release.
 
 Pin exact npm dependencies and commit `package-lock.json` during scaffolding.
 Recheck official compatibility ranges and container image digests at that step.
-The Azure PostgreSQL server version/SKU/region and any cloud image registry
-remain intentionally undecided pending the required environment inputs.
+The Azure PostgreSQL server version/SKU/region, cloud image registry, and
+published-link owner remain intentionally undecided pending the required
+environment inputs.
 
 Official compatibility references reviewed 2026-10-09:
 
@@ -130,7 +135,10 @@ Official compatibility references reviewed 2026-10-09:
 - [Angular Material 22.2.2 release](https://github.com/angular/components/releases/tag/v22.2.2)
 - [Angular CLI 22.2.2 release](https://github.com/angular/angular-cli/releases/tag/v22.2.2)
 - [pgJDBC supported PostgreSQL and Java versions](https://github.com/pgjdbc/pgjdbc#supported-postgresql-and-java-versions)
+- [pgJDBC Java test matrix](https://github.com/pgjdbc/pgjdbc/blob/master/.github/workflows/matrix.mjs)
 - [pgJDBC 42.7.14 release](https://github.com/pgjdbc/pgjdbc/releases/tag/REL42.7.14)
+- [Flyway Java API requirements](https://documentation.red-gate.com/flyway/reference/usage/api-java)
+- [Testcontainers for Java](https://java.testcontainers.org/)
 - [Maven Wrapper documentation](https://maven.apache.org/tools/wrapper/)
 - [Apache Maven 3.10.0 release](https://github.com/apache/maven/releases/tag/maven-3.10.0)
 - [Eclipse Temurin container images](https://github.com/adoptium/containers)

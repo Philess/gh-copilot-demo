@@ -12,37 +12,78 @@ def load_json(path):
         return json.load(file)
 
 
-def verify(capture, baseline):
-    expected_albums = baseline["list"]["body"]
-    actual_list = capture["list"]
+def require(condition, message):
+    if not condition:
+        raise AssertionError(message)
 
-    assert actual_list["status"] == baseline["list"]["status"], "GET /albums status changed"
-    assert actual_list["content_type"].split(";", 1)[0].strip().lower() == "application/json", (
-        "GET /albums must remain JSON"
+
+def verify_album_records(albums):
+    require(
+        [album["id"] for album in albums] == list(range(1, 7)),
+        "album IDs must be ascending from 1 through 6",
     )
-    assert actual_list["body"] == expected_albums, "GET /albums records differ from the baseline"
-    assert [album["id"] for album in actual_list["body"]] == list(range(1, 7)), (
-        "album IDs must be ascending from 1 through 6"
-    )
-    for album in actual_list["body"]:
-        assert set(album) == ALBUM_FIELDS, f"unexpected JSON fields for album {album.get('id')}"
-        assert type(album["id"]) is int, f"id for album {album['id']} must be an integer"
-        assert isinstance(album["title"], str), f"title for album {album['id']} must be a string"
-        assert isinstance(album["artist"], str), f"artist for album {album['id']} must be a string"
-        assert isinstance(album["price"], (int, float)) and not isinstance(album["price"], bool), (
+    for album in albums:
+        require(set(album) == ALBUM_FIELDS, f"unexpected JSON fields for album {album.get('id')}")
+        require(type(album["id"]) is int, f"id for album {album['id']} must be an integer")
+        require(isinstance(album["title"], str), f"title for album {album['id']} must be a string")
+        require(isinstance(album["artist"], str), f"artist for album {album['id']} must be a string")
+        require(
+            isinstance(album["price"], (int, float)) and not isinstance(album["price"], bool),
             f"price for album {album['id']} must be a JSON number"
         )
-        assert isinstance(album["image_url"], str), (
+        require(
+            isinstance(album["image_url"], str),
             f"image_url for album {album['id']} must be a string"
         )
 
-    assert capture["numeric_detail"] == baseline["numeric_detail"], (
-        "numeric detail requests must retain their empty HTTP 200 responses"
+
+def verify_baseline(baseline):
+    expected_list = baseline["list"]
+    require(expected_list["status"] == 200, "baseline GET /albums status must be 200")
+    require(
+        expected_list["content_type"].split(";", 1)[0].strip().lower() == "application/json",
+        "baseline GET /albums must be JSON",
     )
-    actual_invalid = capture["invalid_detail_id"]
-    expected_invalid = baseline["invalid_detail_id"]
-    assert actual_invalid == expected_invalid, (
-        "invalid-ID probes must retain the captured status codes"
+
+    expected_albums = baseline["list"]["body"]
+    verify_album_records(expected_albums)
+
+    require(
+        [item["id"] for item in baseline["numeric_detail"]] == [1, 6, 999],
+        "baseline detail probes must cover existing and nonexistent numeric IDs",
+    )
+    require(
+        all(item["status"] == 200 and item["body"] == "" for item in baseline["numeric_detail"]),
+        "numeric detail baseline must be empty HTTP 200",
+    )
+    require(
+        [item["value"] for item in baseline["invalid_detail_id"]] == ["abc", "1.5", "2147483648"],
+        "baseline invalid-ID probes must cover nonnumeric, fractional, and out-of-range values",
+    )
+    require(
+        all(item["status"] == 400 for item in baseline["invalid_detail_id"]),
+        "baseline invalid-ID status must be 400",
+    )
+
+
+def verify(capture, baseline):
+    verify_baseline(baseline)
+    actual_list = capture["list"]
+
+    require(actual_list["status"] == 200, "GET /albums status changed")
+    require(
+        actual_list["content_type"].split(";", 1)[0].strip().lower() == "application/json",
+        "GET /albums must remain JSON",
+    )
+    verify_album_records(actual_list["body"])
+    require(actual_list["body"] == baseline["list"]["body"], "GET /albums records differ from the baseline")
+    require(
+        capture["numeric_detail"] == baseline["numeric_detail"],
+        "numeric detail requests must retain their empty HTTP 200 responses",
+    )
+    require(
+        capture["invalid_detail_id"] == baseline["invalid_detail_id"],
+        "invalid-ID probes must retain the captured status codes",
     )
 
 
