@@ -1,0 +1,81 @@
+{
+  "list": {
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body": [
+      {
+        "id": 1,
+        "title": "You, Me and an App Id",
+        "artist": "Daprize",
+        "price": 10.99,
+        "image_url": "https://aka.ms/albums-daprlogo"
+      },
+      {
+        "id": 2,
+        "title": "Seven Revision Army",
+        "artist": "The Blue-Green Stripes",
+        "price": 13.99,
+        "image_url": "https://aka.ms/albums-containerappslogo"
+      },
+      {
+        "id": 3,
+        "title": "Scale It Up",
+        "artist": "KEDA Club",
+        "price": 13.99,
+        "image_url": "https://aka.ms/albums-kedalogo"
+      },
+      {
+        "id": 4,
+        "title": "Lost in Translation",
+        "artist": "MegaDNS",
+        "price": 12.99,
+        "image_url": "https://aka.ms/albums-envoylogo"
+      },
+      {
+        "id": 5,
+        "title": "Lock Down Your Love",
+        "artist": "V is for VNET",
+        "price": 12.99,
+        "image_url": "https://aka.ms/albums-vnetlogo"
+      },
+      {
+        "id": 6,
+        "title": "Sweet Container O' Mine",
+        "artist": "Guns N Probeses",
+        "price": 14.99,
+        "image_url": "https://aka.ms/albums-containerappslogo"
+      }
+    ]
+  },
+  "numeric_detail": [
+    {
+      "id": 1,
+      "status": 200,
+      "body": ""
+    },
+    {
+      "id": 6,
+      "status": 200,
+      "body": ""
+    },
+    {
+      "id": 999,
+      "status": 200,
+      "body": ""
+    }
+  ],
+  "invalid_detail_id": [
+    {
+      "value": "abc",
+      "status": 400
+    },
+    {
+      "value": "1.5",
+      "status": 400
+    },
+    {
+      "value": "2147483648",
+      "status": 400
+    }
+  ]
+}
