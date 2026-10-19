@@ -1,0 +1,71 @@
+# GitHub Action workflow that runs on push to main branch
+# Docker build and push the album-api image to ACR
+name: CI Workflow
+on:
+    push:
+        branches:
+            - main
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v1
+            - name: Build and push Docker image
+              uses: docker/build-push-action@v2
+              with:
+                  context: .
+                  push: true
+                  tags: myregistry.azurecr.io/album-api:latest
+                  username: ${{ secrets.ACR_USERNAME }}
+                  password: ${{ secrets.ACR_PASSWORD }}
+                  registry: myregistry.azurecr.io
+                  file: ./Dockerfile
+                  platforms: linux/amd64
+                  cache-from: type=registry,ref=myregistry.azurecr.io/album-api:latest
+                  cache-to: type=registry,ref=myregistry.azurecr.io/album-api:latest,mode=max
+                  build-args: |
+                    NODE_ENV=production
+                    API_URL=https://api.example.com
+                    DEBUG=true
+                    PORT=3000
+                    DB_URL=mongodb://localhost:27017/mydb
+                    REDIS_URL=redis://localhost:6379
+                    JWT_SECRET=your_jwt_secret
+                    OAUTH_CLIENT_ID=your_oauth_client_id
+                    OAUTH_CLIENT_SECRET=your_oauth_client_secret
+                    OAUTH_REDIRECT_URI=https://api.example.com/oauth/callback
+                    SENTRY_DSN=https://your_sentry_dsn
+                    LOG_LEVEL=info
+                    FEATURE_FLAG=true
+                    NEW_FEATURE_FLAG=false
+                    EXPERIMENTAL_FEATURE_FLAG=true
+
+# tag the image with the GitHub run id and push to docker hub
+            - name: Tag and push Docker image with GitHub run id
+              run: |
+                docker tag myregistry.azurecr.io/album-api:latest myregistry.azurecr.io/album-api:${{ github.run_id }}
+                docker push myregistry.azurecr.io/album-api:${{ github.run_id }}
+
+ # run tests on the album-api image
+            - name: Run tests on the album-api image
+              run: |
+                docker run --rm myregistry.azurecr.io/album-api:latest npm test 
+                docker run --rm myregistry.azurecr.io/album-api:latest npm run lint
+                docker run --rm myregistry.azurecr.io/album-api:latest npm run build
+
+
+# deploy the album-api image to the dev AKS cluster
+            - name: Deploy to dev AKS cluster
+              run: |
+                kubectl set image deployment/album-api album-api=myregistry.azurecr.io/album-api:${{ github.run_id }} --namespace=dev
+                kubectl rollout status deployment/album-api --namespace=dev
+
+# find and replace the %%VERSION%% by the GitHub action run id in every appmanifest.yml file
+            - name: Replace version in appmanifest.yml files
+              run: |
+                find . -name "appmanifest.yml" -exec sed -i "s/%%VERSION%%/${{ github.run_id }}/g" {} \;    
+                
+               

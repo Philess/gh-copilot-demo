@@ -114,6 +114,87 @@ If you need to change these settings, you can modify:
 - API port: `albums-api/Properties/launchSettings.json`
 - Vue app configuration: Environment variables in `.vscode/launch.json` or set `VITE_ALBUM_API_HOST` environment variable
 
+### Album API routes
+
+The API uses the `/albums` base route. Interactive documentation is available at
+`http://localhost:3000/swagger` when running in Development.
+
+| Method | Route | Successful response |
+|--------|-------|---------------------|
+| GET | `/albums` | `200 OK` with all albums |
+| GET | `/albums/{id}` | `200 OK` with one album |
+| GET | `/albums/sort?sortBy=title` | `200 OK` sorted by `title`, `artist`, or `price` |
+| GET | `/albums/search?year=2024` | `200 OK` with albums from exactly that year, or `[]` |
+| POST | `/albums` | `201 Created` with the album and a `Location` header |
+| PUT | `/albums/{id}` | `200 OK` with the fully replaced album |
+| DELETE | `/albums/{id}` | `204 No Content` |
+
+Both POST and PUT require all five fields:
+
+```json
+{
+  "title": "New Horizons",
+  "artist": "The Containers",
+  "year": 2024,
+  "price": 12.99,
+  "image_url": "https://example.com/cover.png"
+}
+```
+
+The response contains the same fields plus a server-assigned integer `id`. Do
+not supply an ID in the request body; PUT retains the ID from the route and
+does not create a missing album. Duplicate titles are allowed.
+
+- `title` and `artist` must be nonblank.
+- `year` must be an integer between 1 and 9999.
+- `price` must be finite and nonnegative; zero is valid.
+- `image_url` must be an absolute HTTP or HTTPS URL.
+- Missing or invalid write fields and missing/invalid search years return
+  `400 Bad Request` with validation Problem Details.
+- Unknown IDs return `404 Not Found`, including PUT and repeated DELETE requests.
+- Unsupported sort fields return `400 Bad Request`.
+
+The six sample albums are seeded once per application instance. Changes are
+shared across requests and visible in list, detail, sort, and search results.
+IDs increase and are not reused after deletion. All state resets on restart;
+separate application instances do not share data. These demo endpoints do not
+add authentication or authorization.
+
+Use [`albums-api.http`](./albums-api/albums-api.http) for runnable requests,
+including error cases. The write examples refer to the ID returned by the
+named create request.
+
+Run the backend build and isolated integration tests from the repository root:
+
+```bash
+dotnet build albums-api/albums-api.csproj
+dotnet test albums-api.Tests/albums-api.Tests.csproj
+```
+
+The tests start an in-process host with fresh seed data for each test. They do
+not need a running API, SQL database, or file/product helper configuration.
+
+### File and product lookup sample configuration
+
+The sample [`MyController`](./albums-api/Controllers/UnsecuredController.cs)
+requires `ConnectionStrings:Products` and `FileAccess:RootDirectory` through .NET
+configuration. Supply the database connection string through user secrets or a
+deployment secret, not committed configuration. Environment variable equivalents
+are `ConnectionStrings__Products` and `FileAccess__RootDirectory`.
+
+The file root must be an existing absolute directory. File reads accept only
+plain filenames, not paths, and reject symbolic links in both the root path and
+the requested file. Keep this directory and its ancestors under trusted
+administrative control: untrusted users must not be able to replace files or
+directories between validation and opening, or introduce hard links. All files
+in the root should be approved for disclosure to the caller; callers must enforce
+authorization before invoking this helper. File reads return the complete UTF-8
+text and propagate access and I/O errors.
+
+Product lookups use a parameterized SQL query and throw `KeyNotFoundException`
+when no matching product exists. Use a least-privileged database account with
+only the required read access.
+
 ### Alternative: GitHub Codespaces
 
 The easiest way is to open this solution in a GitHub Codespace, or run it locally in a devcontainer. The development environment will be automatically configured for you.

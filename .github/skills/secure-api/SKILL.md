@@ -1,3 +1,8 @@
+---
+name: secure-api
+description: secure-api
+disable-model-invocation: true
+---
 Secure REST API review:
 * Ensure all endpoints are protected by authentication and authorization
 * Validate all user inputs and sanitize data

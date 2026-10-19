@@ -57,6 +57,25 @@ The API should return albums in the following format:
 - `npm run build` - Build for production (with TypeScript compilation)
 - `npm run preview` - Preview production build
 - `npm run type-check` - Run TypeScript type checking without building
+- `npm test -- --run` - Run unit and cart DOM integration tests once
+- `npm run test:e2e` - Run the Playwright cart scenario against `http://localhost:3107`
+
+### Playwright Cart Scenario
+
+With the album API running on `http://localhost:3000`, start the frontend using
+`npm run dev -- --host localhost --port 3107 --strictPort`. In another terminal,
+from `album-viewer`, run:
+
+```powershell
+npx playwright install chromium
+npm run test:e2e
+```
+
+The test uses real API data. It opens the app, selects the first album, opens
+the cart, checks its title, artist, price, and item count, then captures the cart.
+Each step must pass before the next step runs. The screenshot is saved under
+`../.playwright-mcp/test-results` and attached to the test result.
+Files named `*.pw.ts` are Playwright tests, separate from the Vitest tests.
 
 ## Project Structure
 
@@ -109,6 +128,23 @@ Each album is displayed in a card with:
 The app adapts to different screen sizes:
 - Desktop: Multi-column grid layout
 - Mobile: Single column layout with stacked buttons
+
+### Cart Management
+- Use **Add to Cart** on an album card to select it. The header cart icon shows
+  the current count, including zero.
+- Each album can appear only once, identified by its ID. Selected cards show a
+  disabled **In Cart** button.
+- Activate the header cart button to open a non-modal panel showing the selected
+  albums' titles, artists, and prices. Use **Remove** to delete a selection; the
+  count and card buttons update immediately, and removed albums can be added again.
+- An empty cart displays **Your cart is empty**.
+- Use **Close cart**, the header cart button, or Escape while focus is inside the
+  panel to close it. Opening moves focus into the panel; closing returns focus to
+  the header button. Removing an item moves focus to the next remove action,
+  the previous one if it was last, or the close button when the cart becomes empty.
+- The cart stays in memory while the app is open, including when the panel is
+  closed. Refreshing the page resets it. There is no checkout, quantity control,
+  backend persistence, or browser-storage persistence.
 
 ### Error Handling
 - Loading spinner while fetching data

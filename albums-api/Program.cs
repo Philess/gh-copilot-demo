@@ -1,3 +1,5 @@
+using albums_api.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var DefaultHttpPort = Environment.GetEnvironmentVariable("DAPR_HTTP_PORT") ?? "3500";
@@ -7,9 +9,15 @@ var CollectionId = Environment.GetEnvironmentVariable("COLLECTION_ID") ?? "Great
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddSingleton<IAlbumService, AlbumService>();
+builder.Services.AddProblemDetails();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    var xmlFile = $"{typeof(Program).Assembly.GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
+});
 builder.Services.AddHttpClient();
 
 builder.Services.AddCors(options => {
@@ -22,6 +30,8 @@ builder.Services.AddCors(options => {
 });
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -49,3 +59,5 @@ app.MapGet("/", async context =>
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

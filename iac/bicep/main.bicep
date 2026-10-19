@@ -124,6 +124,32 @@ module albumServiceCapp 'modules/container-app.bicep' = {
   }
 }
 
+// Container Registry
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-06-01-preview' = {
+  name: registryName
+  location: location
+  sku: {
+    name: 'Basic'
+  }
+  properties: {
+    adminUserEnabled: true
+  }
+}
+
+// Azure Open AI resource
+resource openAI 'Microsoft.CognitiveServices/accounts@2021-04-30' = {
+  name: openAIName
+  location: location
+  sku: {
+    name: 'S0'
+  }
+  kind: 'OpenAI'
+  properties: {
+    apiKey: openAIKey
+  }
+}
+
+
 output env array=[
   'Environment name: ${containerAppsEnv.name}'
   'Storage account name: ${storageAccount.name}'

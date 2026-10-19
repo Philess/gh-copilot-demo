@@ -1,0 +1,83 @@
+@baseUrl = http://localhost:3000
+
+### List all albums
+GET {{baseUrl}}/albums
+
+### Get a seeded album
+GET {{baseUrl}}/albums/1
+
+### Sort albums by title (also supports artist and price)
+GET {{baseUrl}}/albums/sort?sortBy=title
+
+### Find albums released in exactly 2024
+GET {{baseUrl}}/albums/search?year=2024
+
+### Create an album; run this before requests referencing createAlbum
+# @name createAlbum
+POST {{baseUrl}}/albums
+Content-Type: application/json
+
+{
+  "title": "New Horizons",
+  "artist": "The Containers",
+  "year": 2030,
+  "price": 12.99,
+  "image_url": "https://example.com/cover.png"
+}
+
+### Follow the newly assigned ID
+GET {{baseUrl}}/albums/{{createAlbum.response.body.$.id}}
+
+### Fully replace the created album (all fields are required)
+PUT {{baseUrl}}/albums/{{createAlbum.response.body.$.id}}
+Content-Type: application/json
+
+{
+  "title": "New Horizons Remastered",
+  "artist": "The Containers",
+  "year": 2031,
+  "price": 14.99,
+  "image_url": "https://example.com/remastered.png"
+}
+
+### Find the updated album in its new year
+GET {{baseUrl}}/albums/search?year=2031
+
+### Delete the created album (204, no response body)
+DELETE {{baseUrl}}/albums/{{createAlbum.response.body.$.id}}
+
+### Repeating the deletion returns 404
+DELETE {{baseUrl}}/albums/{{createAlbum.response.body.$.id}}
+
+### Missing album returns 404
+GET {{baseUrl}}/albums/2147483647
+
+### Updating a missing album returns 404, not an upsert
+PUT {{baseUrl}}/albums/2147483647
+Content-Type: application/json
+
+{
+  "title": "Missing Album",
+  "artist": "The Containers",
+  "year": 2024,
+  "price": 0,
+  "image_url": "https://example.com/cover.png"
+}
+
+### Missing search year returns 400
+GET {{baseUrl}}/albums/search
+
+### Out-of-range search year returns 400
+GET {{baseUrl}}/albums/search?year=10000
+
+### Invalid fields return 400 with validation Problem Details
+POST {{baseUrl}}/albums
+Content-Type: application/json
+
+{
+  "title": " ",
+  "artist": "The Containers",
+  "year": 2024,
+  "price": -1,
+  "image_url": "/relative.png"
+}
